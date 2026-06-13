@@ -74,7 +74,11 @@ export const draftDonorMessage = createServerFn({ method: "POST" })
 - Connect explicit overlaps between the sender's initiatives and the donor's priorities.
 - Sound like a real human, not a form letter. No filler, no buzzwords.
 - 150-220 words. End with a clear, low-friction ask (intro call).
-- Subject line: under 70 chars, specific, no clickbait.`;
+
+Respond in EXACTLY this format, no preamble, no markdown, no code fences:
+SUBJECT: <one line, under 70 characters, specific>
+BODY:
+<the full message body, multiple paragraphs allowed>`;
 
     const prompt = `DONOR
 Name: ${donor.name}
@@ -95,17 +99,27 @@ ${projectSummary}
 
 Write a personalised outreach message from the sender to the donor.`;
 
-    const { experimental_output } = await generateText({
+    const { text } = await generateText({
       model: gateway("google/gemini-3-flash-preview"),
       system,
       prompt,
-      experimental_output: Output.object({
-        schema: z.object({
-          subject: z.string(),
-          body: z.string(),
-        }),
-      }),
     });
 
-    return experimental_output as { subject: string; body: string };
+    // Parse "SUBJECT: ...\nBODY:\n..."
+    const raw = (text ?? "").trim();
+    const subjectMatch = raw.match(/^\s*SUBJECT:\s*(.+?)\s*(?:\r?\n|$)/i);
+    const bodyMatch = raw.match(/BODY:\s*([\s\S]+)$/i);
+    let subject = subjectMatch?.[1]?.trim() ?? "";
+    let body = bodyMatch?.[1]?.trim() ?? "";
+
+    if (!body) {
+      // Fallback: no markers — treat first line as subject, rest as body
+      const lines = raw.split(/\r?\n/);
+      subject = subject || lines[0]?.replace(/^subject:\s*/i, "").trim() || `Partnership inquiry from ${org?.name ?? "FieldMap"}`;
+      body = lines.slice(1).join("\n").trim() || raw;
+    }
+    if (!subject) subject = `Partnership inquiry from ${org?.name ?? "FieldMap"}`;
+
+    return { subject, body };
   });
+
