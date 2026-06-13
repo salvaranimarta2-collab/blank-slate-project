@@ -776,11 +776,11 @@ function DonorOverview({
         <div className="flex items-end justify-between">
           <div>
             <h3 className="text-sm font-semibold">
-              Initiatives in your focus areas
+              Initiatives I donated to
             </h3>
             <p className="text-xs text-muted-foreground">
-              Matched on your interests. Click any to see details and reach
-              out.
+              Initiatives in your focus areas. Click any to see details and
+              reach out.
             </p>
           </div>
           <Badge variant="secondary" className="text-[10px]">
