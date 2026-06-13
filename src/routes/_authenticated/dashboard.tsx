@@ -852,6 +852,8 @@ function InitiativeCard({
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
+  const org = orgById(project.orgId);
+  const kind = org ? orgKind(org) : "RLO";
   const photo = categoryPhotos[project.category];
   const funding = project.needs.funding;
   let raised = funding?.raised;
