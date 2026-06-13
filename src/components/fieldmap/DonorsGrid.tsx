@@ -16,10 +16,12 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { donors, type DonorType } from "@/lib/donors-data";
+import { donors, type Donor, type DonorType } from "@/lib/donors-data";
 import { categories, type Category } from "@/lib/fieldmap-data";
 import { orgColor, orgInitials } from "@/lib/category-photos";
-import { Mail, MapPin, Target, Globe2, Search, X } from "lucide-react";
+import { MessageSquare, MapPin, Target, Globe2, Search, X } from "lucide-react";
+import { ContactDonorDialog } from "@/components/fieldmap/ContactDonorDialog";
+import { useAuth } from "@/lib/use-auth";
 
 const typeColor: Record<string, string> = {
   Foundation: "bg-[hsl(212_85%_48%)] text-white hover:bg-[hsl(212_85%_44%)]",
@@ -45,6 +47,9 @@ export function DonorsGrid() {
   const [type, setType] = useState<DonorType | "all">("all");
   const [interests, setInterests] = useState<Category[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
+  const [contactDonor, setContactDonor] = useState<Donor | null>(null);
+  const { role } = useAuth();
+  const canContact = role === "rlo" || role === "ngo";
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -277,19 +282,19 @@ export function DonorsGrid() {
                     </div>
                   </div>
 
-                  <Button asChild size="sm" className="mt-auto w-full">
-                    <a
-                      href={
-                        d.contact.includes("@")
-                          ? `mailto:${d.contact}?subject=${encodeURIComponent(
-                              "Partnership enquiry via FieldMap",
-                            )}`
-                          : "#"
-                      }
-                    >
-                      <Mail className="mr-1.5 h-3.5 w-3.5" />
-                      Contact donor
-                    </a>
+                  <Button
+                    size="sm"
+                    className="mt-auto w-full"
+                    onClick={() => setContactDonor(d)}
+                    disabled={!canContact}
+                    title={
+                      canContact
+                        ? undefined
+                        : "Sign in as an RLO or NGO to contact donors"
+                    }
+                  >
+                    <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
+                    Contact donor
                   </Button>
                 </CardContent>
               </Card>
@@ -297,6 +302,24 @@ export function DonorsGrid() {
           </div>
         )}
       </div>
+
+      {contactDonor && (
+        <ContactDonorDialog
+          open={!!contactDonor}
+          onOpenChange={(o) => !o && setContactDonor(null)}
+          donor={{
+            id: contactDonor.id,
+            name: contactDonor.name,
+            type: contactDonor.type,
+            location: contactDonor.location,
+            about: contactDonor.about,
+            interests: contactDonor.interests,
+            regions: contactDonor.regions,
+            ticketSize: contactDonor.ticketSize,
+            recentlyFunded: contactDonor.recentlyFunded,
+          }}
+        />
+      )}
     </div>
   );
 }
