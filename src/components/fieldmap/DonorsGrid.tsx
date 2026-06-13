@@ -16,10 +16,12 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { donors, type DonorType } from "@/lib/donors-data";
+import { donors, type Donor, type DonorType } from "@/lib/donors-data";
 import { categories, type Category } from "@/lib/fieldmap-data";
 import { orgColor, orgInitials } from "@/lib/category-photos";
-import { Mail, MapPin, Target, Globe2, Search, X } from "lucide-react";
+import { MessageSquare, MapPin, Target, Globe2, Search, X } from "lucide-react";
+import { ContactDonorDialog } from "@/components/fieldmap/ContactDonorDialog";
+import { useAuth } from "@/lib/use-auth";
 
 const typeColor: Record<string, string> = {
   Foundation: "bg-[hsl(212_85%_48%)] text-white hover:bg-[hsl(212_85%_44%)]",
