@@ -9,10 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
-import { projects as seedProjects, type Project, type BeneficiaryRange, type Category, type ProjectStatus, type ProjectType } from "@/lib/fieldmap-data";
-import { ProjectCard } from "@/components/fieldmap/ProjectCard";
-import { categoryPhotos } from "@/lib/category-photos";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({ meta: [{ title: "My profile — FieldMap" }] }),
