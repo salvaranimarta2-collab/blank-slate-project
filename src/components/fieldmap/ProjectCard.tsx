@@ -73,6 +73,7 @@ export function ProjectCard({
   const perspectiveOrg =
     (perspectiveOrgId && orgById(perspectiveOrgId)) || null;
   const isPartnerView = !!perspectiveOrg && perspectiveOrg.id !== leadOrg.id;
+  const isOwnInitiative = perspectiveOrgId === project.orgId;
   const org = perspectiveOrg ?? leadOrg;
 
   // Build "collaborating with" list from the active perspective:
