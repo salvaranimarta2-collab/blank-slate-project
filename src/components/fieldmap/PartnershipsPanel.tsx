@@ -56,7 +56,7 @@ export function PartnershipsPanel({
             Recent partnerships
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            Initiatives delivered through collaborations sparked on FieldMap.
+            Initiatives delivered through collaborations sparked on Waythrough.
             {" "}
             {partnerships.length} active{" "}
             {partnerships.length === 1 ? "partnership" : "partnerships"} ·{" "}

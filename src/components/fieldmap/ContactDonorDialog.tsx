@@ -58,7 +58,7 @@ export function ContactDonorDialog({ open, onOpenChange, donor }: Props) {
     setSending(false);
     onOpenChange(false);
     toast.success(`Message sent to ${donor.name}`, {
-      description: "They'll see it in their FieldMap inbox.",
+      description: "They'll see it in their Waythrough inbox.",
     });
   }
 

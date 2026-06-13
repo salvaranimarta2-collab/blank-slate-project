@@ -18,7 +18,7 @@ function buildSmsLink(phone: string, body: string) {
 
 function actionFor(role: Role, project: Project, orgName: string) {
   const senderLine =
-    "\n\n— Sent via FieldMap. Reply to this number with your contact details.";
+    "\n\n— Sent via Waythrough. Reply to this number with your contact details.";
   if (role === "seeking_initiatives") {
     const fund = project.needs.funding;
     const amount = fund
@@ -207,7 +207,7 @@ export function ProjectCard({
           </div>
           {!isOwnInitiative && (
             <p className="text-[11px] text-muted-foreground">
-              SMS opens your messaging app. "Message in-app" keeps the conversation on FieldMap.
+              SMS opens your messaging app. "Message in-app" keeps the conversation on Waythrough.
             </p>
           )}
           {isPartnerView && (

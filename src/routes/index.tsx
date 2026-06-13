@@ -26,22 +26,22 @@ import { NotificationsBell } from "@/components/NotificationsBell";
 import { AggregateStats } from "@/components/AggregateStats";
 import { MonthlyCostBanner } from "@/components/MonthlyCostBanner";
 import { useAuth } from "@/lib/use-auth";
-import logo from "@/assets/fieldmap-logo.png";
+import logo from "@/assets/waythrough-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FieldMap — Discover refugee-led projects" },
+      { title: "Waythrough — connecting grassroot RLOs, NGOs and donors" },
       {
         name: "description",
         content:
-          "Geographic discovery for refugee-led organizations. One map, one set of pins, identical treatment for every project.",
+          "Waythrough connects grassroot RLOs, NGOs and donors. One map, one set of pins, identical treatment for every project.",
       },
-      { property: "og:title", content: "FieldMap" },
+      { property: "og:title", content: "Waythrough" },
       {
         property: "og:description",
         content:
-          "Geographic discovery for refugee-led organizations. One map, identical pins, SMS-first contact.",
+          "Waythrough connects grassroot RLOs, NGOs and donors. One map, identical pins, SMS-first contact.",
       },
     ],
   }),
@@ -109,15 +109,15 @@ function HomePage() {
         <div className="flex items-center gap-2">
           <img
             src={logo}
-            alt="FieldMap logo"
+            alt="Waythrough logo"
             className="h-8 w-8 rounded-md object-contain ring-2 ring-[hsl(152_65%_36%)]/40"
           />
           <div>
             <h1 className="text-sm font-semibold leading-none">
-              Field<span className="text-[hsl(152_65%_36%)]">Map</span>
+              Waythrough
             </h1>
             <p className="text-[11px] text-muted-foreground">
-              Refugee-led & NGO initiatives, mapped.
+              connecting grassroot RLOs, NGOs and donors
             </p>
           </div>
         </div>
