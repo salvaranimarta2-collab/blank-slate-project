@@ -186,6 +186,7 @@ type UserProjectRow = {
   beneficiaries: string | null;
   needs: Record<string, unknown> | null;
   partner_org_refs: string[] | null;
+  seed_project_ref: string | null;
 };
 
 function Overview({ userId, role }: { userId: string; role: string | null }) {
@@ -219,7 +220,7 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
       const { data: upRows } = await supabase
         .from("user_projects")
         .select(
-          "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs",
+          "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs, seed_project_ref",
         )
         .eq("owner_id", userId)
         .order("created_at", { ascending: false });
@@ -250,6 +251,11 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
     return userProjects.map((p) => userRowToProject(p, org?.id ?? "user-org"));
   }, [userProjects, org]);
 
+  const importedSeedIds = useMemo(
+    () => new Set(userProjects.map((p) => p.seed_project_ref).filter(Boolean) as string[]),
+    [userProjects],
+  );
+
   const initiatives = useMemo<Project[]>(() => {
     if (role === "donor") {
       if (!donor) return [];
@@ -259,13 +265,14 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
     const seedMine = org?.claimed_seed_org_id
       ? seedProjects.filter(
           (p) =>
-            p.orgId === org.claimed_seed_org_id ||
-            (role === "ngo" &&
-              (p.partnerOrgIds ?? []).includes(org.claimed_seed_org_id!)),
+            (p.orgId === org.claimed_seed_org_id ||
+              (role === "ngo" &&
+                (p.partnerOrgIds ?? []).includes(org.claimed_seed_org_id!))) &&
+            !importedSeedIds.has(p.id),
         )
       : [];
     return [...userProjectAsProject, ...seedMine];
-  }, [role, org, donor, userProjectAsProject]);
+  }, [role, org, donor, userProjectAsProject, importedSeedIds]);
 
   const editableIds = useMemo(
     () => new Set(userProjects.map((p) => p.id)),
@@ -400,9 +407,7 @@ function OrgOverview({
     setEditing(null);
     setDialogOpen(true);
   }
-  function openEdit(projectId: string) {
-    const row = userProjects.find((p) => p.id === projectId);
-    if (!row) return;
+  function openEditRow(row: UserProjectRow) {
     setEditing({
       id: row.id,
       title: row.title,
@@ -418,6 +423,46 @@ function OrgOverview({
       partner_org_refs: row.partner_org_refs ?? [],
     });
     setDialogOpen(true);
+  }
+  async function openEditProject(p: Project) {
+    // If this is one of our user_projects, edit directly.
+    const owned = userProjects.find((r) => r.id === p.id);
+    if (owned) return openEditRow(owned);
+    // Otherwise it's a seed project we own via claimed_seed_org_id — clone it
+    // into user_projects (so it becomes editable) then open the edit dialog.
+    if (!org?.id) {
+      toast.error("Save your organisation first on the profile page");
+      return;
+    }
+    const payload = {
+      owner_id: userId,
+      org_id: org.id,
+      title: p.title,
+      category: p.category,
+      project_type: p.type,
+      location_label: p.locationLabel,
+      lat: p.lat,
+      lng: p.lng,
+      description: p.description ?? "",
+      beneficiaries: p.beneficiaries,
+      status: p.status,
+      needs: p.needs as never,
+      partner_org_refs: (p.partnerOrgIds ?? []).map((id) => `org:${id}`),
+      seed_project_ref: p.id,
+    };
+    const { data, error } = await supabase
+      .from("user_projects")
+      .insert(payload)
+      .select(
+        "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs, seed_project_ref",
+      )
+      .single();
+    if (error || !data) {
+      toast.error(error?.message ?? "Could not import initiative");
+      return;
+    }
+    onChanged();
+    openEditRow(data as UserProjectRow);
   }
   async function onDelete(projectId: string) {
     if (!confirm("Delete this initiative?")) return;
@@ -606,9 +651,9 @@ function OrgOverview({
                 key={p.id}
                 project={p}
                 onOpen={() => onOpen(p)}
-                editable={editableIds.has(p.id)}
-                onEdit={() => openEdit(p.id)}
-                onDelete={() => onDelete(p.id)}
+                editable
+                onEdit={() => openEditProject(p)}
+                onDelete={editableIds.has(p.id) ? () => onDelete(p.id) : undefined}
               />
             ))}
           </div>

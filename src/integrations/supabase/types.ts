@@ -359,6 +359,7 @@ export type Database = {
           photos: string[]
           project_type: string
           seed_org_id: string | null
+          seed_project_ref: string | null
           status: string
           target_date: string | null
           title: string
@@ -380,6 +381,7 @@ export type Database = {
           photos?: string[]
           project_type?: string
           seed_org_id?: string | null
+          seed_project_ref?: string | null
           status?: string
           target_date?: string | null
           title: string
@@ -401,6 +403,7 @@ export type Database = {
           photos?: string[]
           project_type?: string
           seed_org_id?: string | null
+          seed_project_ref?: string | null
           status?: string
           target_date?: string | null
           title?: string
