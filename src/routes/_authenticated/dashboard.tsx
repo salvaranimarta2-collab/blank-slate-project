@@ -105,7 +105,7 @@ function DashboardPage() {
       </div>
 
       {tab === "overview" && <Overview userId={user.id} role={role} />}
-      {tab === "threads" && <ThreadsList userId={user.id} />}
+      {tab === "threads" && <ThreadsList userId={user.id} role={role} />}
     </Shell>
   );
 }
