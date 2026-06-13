@@ -105,7 +105,7 @@ function DashboardPage() {
       </div>
 
       {tab === "overview" && <Overview userId={user.id} role={role} />}
-      {tab === "threads" && <ThreadsList userId={user.id} />}
+      {tab === "threads" && <ThreadsList userId={user.id} role={role} />}
     </Shell>
   );
 }
@@ -1121,9 +1121,91 @@ function SmsClaimCard({
 
 // ---------- Threads ----------
 
-function ThreadsList({ userId }: { userId: string }) {
+type DemoMessage = { id: string; from: "me" | "them"; body: string; minutesAgo: number };
+type DemoThread = {
+  id: string;
+  name: string;
+  subtitle: string;
+  project_ref: string | null;
+  messages: DemoMessage[];
+};
+
+const DONOR_DEMOS: DemoThread[] = [
+  {
+    id: "demo-d-1",
+    name: "Hope Bridge Initiative (NGO)",
+    subtitle: "Clean water — Northern Kenya",
+    project_ref: "Borehole expansion, Turkana",
+    messages: [
+      { id: "m1", from: "them", minutesAgo: 60 * 26, body: "Hi! Thank you for the interest you've shown in our work. We're scaling boreholes in Turkana and would love to share our impact deck." },
+      { id: "m2", from: "me", minutesAgo: 60 * 25, body: "Happy to take a look — what's the funding gap for the next phase?" },
+      { id: "m3", from: "them", minutesAgo: 60 * 24, body: "We're at 62% of the $180k needed for 6 new sites. Could we set up a 20-min intro call next week?" },
+    ],
+  },
+  {
+    id: "demo-d-2",
+    name: "Sahel Youth Collective (RLO)",
+    subtitle: "Refugee-led livelihoods — Burkina Faso",
+    project_ref: "Vocational training cohort 3",
+    messages: [
+      { id: "m1", from: "them", minutesAgo: 60 * 5, body: "Hello — we noticed you fund refugee-led work in West Africa. Our 3rd cohort just graduated 48 tailors and welders." },
+      { id: "m2", from: "me", minutesAgo: 60 * 4, body: "Congrats! What's your placement rate after 6 months?" },
+      { id: "m3", from: "them", minutesAgo: 60 * 3, body: "71% of graduates are earning income or running micro-shops. Happy to share the M&E report." },
+    ],
+  },
+  {
+    id: "demo-d-3",
+    name: "Andes Mutual Aid (RLO)",
+    subtitle: "Venezuelan migrants — Peru",
+    project_ref: null,
+    messages: [
+      { id: "m1", from: "them", minutesAgo: 30, body: "Thanks for connecting! We run peer support and legal aid for Venezuelan migrants in Lima and Trujillo." },
+    ],
+  },
+];
+
+const ORG_DEMOS: DemoThread[] = [
+  {
+    id: "demo-o-1",
+    name: "Mosaic Foundation (Donor)",
+    subtitle: "Family foundation — $50k–$250k grants",
+    project_ref: "Inquiry: clean water programme",
+    messages: [
+      { id: "m1", from: "them", minutesAgo: 60 * 20, body: "Hi — your borehole programme caught our eye. Could you share your latest annual report and a 1-pager on the next phase?" },
+      { id: "m2", from: "me", minutesAgo: 60 * 19, body: "Absolutely, sending both now. Would a short call next Tuesday work for your team?" },
+      { id: "m3", from: "them", minutesAgo: 60 * 18, body: "Tuesday at 3pm CET works. Looking forward to it." },
+    ],
+  },
+  {
+    id: "demo-o-2",
+    name: "Northwind Trust (Donor)",
+    subtitle: "Refugee-led organisations portfolio",
+    project_ref: "Vocational training cohort 3",
+    messages: [
+      { id: "m1", from: "them", minutesAgo: 60 * 6, body: "Hello! We focus on RLO-led livelihoods and your placement rate looks strong. What's your average cost per learner?" },
+      { id: "m2", from: "me", minutesAgo: 60 * 5, body: "About $420 per learner end-to-end, including stipend and toolkit." },
+    ],
+  },
+  {
+    id: "demo-o-3",
+    name: "Ada Lin (Individual donor)",
+    subtitle: "Recurring giver",
+    project_ref: null,
+    messages: [
+      { id: "m1", from: "them", minutesAgo: 45, body: "Just set up a monthly gift — keep up the great work! Any way to receive quarterly updates?" },
+    ],
+  },
+];
+
+function ThreadsList({ userId, role }: { userId: string; role: string | null }) {
   const [threads, setThreads] = useState<ThreadRow[]>([]);
   const [active, setActive] = useState<ThreadRow | null>(null);
+  const [activeDemo, setActiveDemo] = useState<DemoThread | null>(null);
+
+  const demos = useMemo<DemoThread[]>(
+    () => (role === "donor" ? DONOR_DEMOS : ORG_DEMOS),
+    [role],
+  );
 
   useEffect(() => {
     supabase
@@ -1134,12 +1216,14 @@ function ThreadsList({ userId }: { userId: string }) {
       .then(({ data }) => setThreads((data as ThreadRow[]) ?? []));
   }, [userId]);
 
-  if (threads.length === 0)
-    return (
-      <Card className="p-6 text-center text-sm text-muted-foreground">
-        No in-app conversations yet.
-      </Card>
-    );
+  function pickReal(t: ThreadRow) {
+    setActive(t);
+    setActiveDemo(null);
+  }
+  function pickDemo(d: DemoThread) {
+    setActiveDemo(d);
+    setActive(null);
+  }
 
   return (
     <div className="grid gap-4 sm:grid-cols-[1fr_2fr]">
@@ -1150,7 +1234,7 @@ function ThreadsList({ userId }: { userId: string }) {
           return (
             <li key={t.id}>
               <button
-                onClick={() => setActive(t)}
+                onClick={() => pickReal(t)}
                 className={`w-full rounded-md border bg-card p-3 text-left text-sm ${
                   active?.id === t.id ? "border-primary" : ""
                 }`}
@@ -1165,9 +1249,29 @@ function ThreadsList({ userId }: { userId: string }) {
             </li>
           );
         })}
+        {demos.map((d) => (
+          <li key={d.id}>
+            <button
+              onClick={() => pickDemo(d)}
+              className={`w-full rounded-md border bg-card p-3 text-left text-sm ${
+                activeDemo?.id === d.id ? "border-primary" : ""
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="truncate font-medium">{d.name}</span>
+                <Badge variant="secondary" className="shrink-0 text-[10px]">Demo</Badge>
+              </div>
+              <div className="truncate text-xs text-muted-foreground">
+                {d.subtitle}
+              </div>
+            </button>
+          </li>
+        ))}
       </ul>
       {active ? (
         <ThreadView userId={userId} thread={active} />
+      ) : activeDemo ? (
+        <DemoThreadView demo={activeDemo} />
       ) : (
         <Card className="p-6 text-center text-sm text-muted-foreground">
           Pick a thread to read.
@@ -1248,3 +1352,64 @@ function ThreadView({ userId, thread }: { userId: string; thread: ThreadRow }) {
     </Card>
   );
 }
+
+function DemoThreadView({ demo }: { demo: DemoThread }) {
+  const [messages, setMessages] = useState<DemoMessage[]>(demo.messages);
+  const [body, setBody] = useState("");
+
+  useEffect(() => {
+    setMessages(demo.messages);
+  }, [demo.id]);
+
+  function send() {
+    if (!body.trim()) return;
+    setMessages((prev) => [
+      ...prev,
+      { id: `local-${Date.now()}`, from: "me", body: body.trim(), minutesAgo: 0 },
+    ]);
+    setBody("");
+  }
+
+  return (
+    <Card className="flex h-[420px] flex-col">
+      <div className="border-b p-3">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          {demo.name}
+          <Badge variant="secondary" className="text-[10px]">Demo</Badge>
+        </div>
+        <div className="text-xs text-muted-foreground">{demo.subtitle}</div>
+      </div>
+      <div className="flex-1 space-y-2 overflow-y-auto p-3">
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}
+          >
+            <div
+              className={`max-w-[80%] rounded-md px-3 py-1.5 text-sm ${
+                m.from === "me"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted"
+              }`}
+            >
+              {m.body}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2 border-t p-2">
+        <Input
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder="Write a reply… (demo — not sent)"
+          onKeyDown={(e) => e.key === "Enter" && send()}
+          maxLength={1000}
+        />
+        <Button size="sm" onClick={send} disabled={!body.trim()}>
+          <Send className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
