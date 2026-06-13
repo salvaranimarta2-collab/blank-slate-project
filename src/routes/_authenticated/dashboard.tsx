@@ -379,6 +379,8 @@ function OrgOverview({
   sms,
   userId,
   onChanged,
+  editableIds,
+  userProjects,
 }: {
   org: UserOrg | null;
   role: string | null;
@@ -387,7 +389,47 @@ function OrgOverview({
   sms: SmsRow[];
   userId: string;
   onChanged: () => void;
+  editableIds: Set<string>;
+  userProjects: UserProjectRow[];
 }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<InitiativeRecord | null>(null);
+
+  function openCreate() {
+    setEditing(null);
+    setDialogOpen(true);
+  }
+  function openEdit(projectId: string) {
+    const row = userProjects.find((p) => p.id === projectId);
+    if (!row) return;
+    setEditing({
+      id: row.id,
+      title: row.title,
+      category: row.category,
+      project_type: row.project_type,
+      location_label: row.location_label,
+      lat: row.lat,
+      lng: row.lng,
+      description: row.description,
+      beneficiaries: row.beneficiaries,
+      status: row.status,
+      needs: (row.needs as InitiativeRecord["needs"]) ?? {},
+      partner_org_refs: row.partner_org_refs ?? [],
+    });
+    setDialogOpen(true);
+  }
+  async function onDelete(projectId: string) {
+    if (!confirm("Delete this initiative?")) return;
+    const { error } = await supabase
+      .from("user_projects")
+      .delete()
+      .eq("id", projectId);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Deleted");
+      onChanged();
+    }
+  }
   const seedOrg = org?.claimed_seed_org_id
     ? orgById(org.claimed_seed_org_id)
     : null;
