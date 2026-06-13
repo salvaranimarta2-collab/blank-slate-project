@@ -170,10 +170,28 @@ type SmsRow = {
 
 // ---------- Overview ----------
 
+type UserProjectRow = {
+  id: string;
+  org_id: string | null;
+  title: string;
+  category: string;
+  project_type: string;
+  status: string;
+  target_date: string | null;
+  location_label: string;
+  lat: number;
+  lng: number;
+  description: string | null;
+  beneficiaries: string | null;
+  needs: Record<string, unknown> | null;
+  partner_org_refs: string[] | null;
+};
+
 function Overview({ userId, role }: { userId: string; role: string | null }) {
   const [org, setOrg] = useState<UserOrg | null>(null);
   const [donor, setDonor] = useState<DonorProfile | null>(null);
   const [sms, setSms] = useState<SmsRow[]>([]);
+  const [userProjects, setUserProjects] = useState<UserProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<Project | null>(null);
 
@@ -197,6 +215,14 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
         .eq("owner_id", userId)
         .maybeSingle();
       setOrg((orgRow as UserOrg) ?? null);
+      const { data: upRows } = await supabase
+        .from("user_projects")
+        .select(
+          "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs",
+        )
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: false });
+      setUserProjects((upRows as UserProjectRow[] | null) ?? []);
       if (role === "rlo") {
         const { data: smsRows } = await supabase
           .from("sms_submissions")
@@ -206,6 +232,8 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
         setSms((smsRows as SmsRow[]) ?? []);
       }
     }
+    // Refresh map registry so newly added user_projects appear on the map.
+    void loadUserProjectsForMap();
     setLoading(false);
   }
 
@@ -213,22 +241,35 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
     refresh();
   }, [userId, role]);
 
-  // Resolve "what initiatives belong to this account?"
+  // Build the "my initiatives" list. For RLO/NGO accounts this is the union
+  // of user_projects rows they own + any seed projects belonging to their
+  // claimed seed org. For donor accounts we use interest-matching as a
+  // placeholder for "initiatives I donated to".
+  const userProjectAsProject = useMemo<Project[]>(() => {
+    return userProjects.map((p) => userRowToProject(p, org?.id ?? "user-org"));
+  }, [userProjects, org]);
+
   const initiatives = useMemo<Project[]>(() => {
     if (role === "donor") {
       if (!donor) return [];
       const interests = new Set(donor.interests ?? []);
       return seedProjects.filter((p) => interests.has(p.category));
     }
-    if (!org?.claimed_seed_org_id) return [];
-    const sid = org.claimed_seed_org_id;
-    if (role === "ngo") {
-      return seedProjects.filter(
-        (p) => p.orgId === sid || (p.partnerOrgIds ?? []).includes(sid),
-      );
-    }
-    return seedProjects.filter((p) => p.orgId === sid);
-  }, [role, org, donor]);
+    const seedMine = org?.claimed_seed_org_id
+      ? seedProjects.filter(
+          (p) =>
+            p.orgId === org.claimed_seed_org_id ||
+            (role === "ngo" &&
+              (p.partnerOrgIds ?? []).includes(org.claimed_seed_org_id!)),
+        )
+      : [];
+    return [...userProjectAsProject, ...seedMine];
+  }, [role, org, donor, userProjectAsProject]);
+
+  const editableIds = useMemo(
+    () => new Set(userProjects.map((p) => p.id)),
+    [userProjects],
+  );
 
   if (loading)
     return <p className="text-sm text-muted-foreground">Loading…</p>;
@@ -250,6 +291,8 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
           sms={sms}
           userId={userId}
           onChanged={refresh}
+          editableIds={editableIds}
+          userProjects={userProjects}
         />
       )}
 
@@ -261,6 +304,25 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
       />
     </div>
   );
+}
+
+function userRowToProject(p: UserProjectRow, orgId: string): Project {
+  return {
+    id: p.id,
+    orgId: p.org_id ?? orgId,
+    title: p.title,
+    category: p.category as Category,
+    type: (p.project_type as ProjectType) ?? "ongoing",
+    targetDate: p.target_date ?? undefined,
+    locationLabel: p.location_label,
+    lat: p.lat,
+    lng: p.lng,
+    description: p.description ?? "",
+    beneficiaries: (p.beneficiaries as BeneficiaryRange) ?? "under 100",
+    needs: (p.needs as Project["needs"]) ?? {},
+    status: (p.status as ProjectStatus) ?? "seeking support",
+    partnerOrgIds: undefined,
+  };
 }
 
 // ---------- Generic KPI ----------
