@@ -1,0 +1,1 @@
+UPDATE public.user_orgs SET description = 'Student/youth-led NGO designing, financing, and installing solar PV systems for refugee-serving facilities worldwide. Born out of the Energy Club at TU Delft in 2017.' WHERE name = 'Energy for Refugees';
