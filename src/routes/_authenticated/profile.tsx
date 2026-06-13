@@ -198,20 +198,6 @@ type UserOrg = {
   claimed_seed_org_id: string | null;
 };
 
-type UserProjectRow = {
-  id: string;
-  title: string;
-  category: string;
-  project_type: string;
-  status: string;
-  target_date: string | null;
-  location_label: string;
-  lat: number | null;
-  lng: number | null;
-  description: string | null;
-  beneficiaries: string | null;
-  needs: Record<string, unknown> | null;
-};
 
 function OrgAccountEditor({
   userId,
