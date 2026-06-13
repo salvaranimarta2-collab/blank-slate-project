@@ -21,6 +21,7 @@ import {
   MessageSquare,
   TrendingUp,
   Sparkles,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -33,7 +34,9 @@ import {
 import { donors as seedDonors } from "@/lib/donors-data";
 import { categoryPhotos, orgColor, orgInitials } from "@/lib/category-photos";
 import { ProjectCard } from "@/components/fieldmap/ProjectCard";
-import { NewProjectDialog } from "@/components/NewProjectDialog";
+import { InitiativeDialog, type InitiativeRecord } from "@/components/InitiativeDialog";
+import { loadUserProjectsForMap } from "@/lib/load-user-projects";
+import type { Category, BeneficiaryRange, ProjectType, ProjectStatus } from "@/lib/fieldmap-data";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — FieldMap" }] }),
@@ -168,10 +171,28 @@ type SmsRow = {
 
 // ---------- Overview ----------
 
+type UserProjectRow = {
+  id: string;
+  org_id: string | null;
+  title: string;
+  category: string;
+  project_type: string;
+  status: string;
+  target_date: string | null;
+  location_label: string;
+  lat: number;
+  lng: number;
+  description: string | null;
+  beneficiaries: string | null;
+  needs: Record<string, unknown> | null;
+  partner_org_refs: string[] | null;
+};
+
 function Overview({ userId, role }: { userId: string; role: string | null }) {
   const [org, setOrg] = useState<UserOrg | null>(null);
   const [donor, setDonor] = useState<DonorProfile | null>(null);
   const [sms, setSms] = useState<SmsRow[]>([]);
+  const [userProjects, setUserProjects] = useState<UserProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<Project | null>(null);
 
@@ -195,6 +216,14 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
         .eq("owner_id", userId)
         .maybeSingle();
       setOrg((orgRow as UserOrg) ?? null);
+      const { data: upRows } = await supabase
+        .from("user_projects")
+        .select(
+          "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs",
+        )
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: false });
+      setUserProjects((upRows as UserProjectRow[] | null) ?? []);
       if (role === "rlo") {
         const { data: smsRows } = await supabase
           .from("sms_submissions")
@@ -204,6 +233,8 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
         setSms((smsRows as SmsRow[]) ?? []);
       }
     }
+    // Refresh map registry so newly added user_projects appear on the map.
+    void loadUserProjectsForMap();
     setLoading(false);
   }
 
@@ -211,22 +242,35 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
     refresh();
   }, [userId, role]);
 
-  // Resolve "what initiatives belong to this account?"
+  // Build the "my initiatives" list. For RLO/NGO accounts this is the union
+  // of user_projects rows they own + any seed projects belonging to their
+  // claimed seed org. For donor accounts we use interest-matching as a
+  // placeholder for "initiatives I donated to".
+  const userProjectAsProject = useMemo<Project[]>(() => {
+    return userProjects.map((p) => userRowToProject(p, org?.id ?? "user-org"));
+  }, [userProjects, org]);
+
   const initiatives = useMemo<Project[]>(() => {
     if (role === "donor") {
       if (!donor) return [];
       const interests = new Set(donor.interests ?? []);
       return seedProjects.filter((p) => interests.has(p.category));
     }
-    if (!org?.claimed_seed_org_id) return [];
-    const sid = org.claimed_seed_org_id;
-    if (role === "ngo") {
-      return seedProjects.filter(
-        (p) => p.orgId === sid || (p.partnerOrgIds ?? []).includes(sid),
-      );
-    }
-    return seedProjects.filter((p) => p.orgId === sid);
-  }, [role, org, donor]);
+    const seedMine = org?.claimed_seed_org_id
+      ? seedProjects.filter(
+          (p) =>
+            p.orgId === org.claimed_seed_org_id ||
+            (role === "ngo" &&
+              (p.partnerOrgIds ?? []).includes(org.claimed_seed_org_id!)),
+        )
+      : [];
+    return [...userProjectAsProject, ...seedMine];
+  }, [role, org, donor, userProjectAsProject]);
+
+  const editableIds = useMemo(
+    () => new Set(userProjects.map((p) => p.id)),
+    [userProjects],
+  );
 
   if (loading)
     return <p className="text-sm text-muted-foreground">Loading…</p>;
@@ -248,6 +292,8 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
           sms={sms}
           userId={userId}
           onChanged={refresh}
+          editableIds={editableIds}
+          userProjects={userProjects}
         />
       )}
 
@@ -259,6 +305,25 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
       />
     </div>
   );
+}
+
+function userRowToProject(p: UserProjectRow, orgId: string): Project {
+  return {
+    id: p.id,
+    orgId: p.org_id ?? orgId,
+    title: p.title,
+    category: p.category as Category,
+    type: (p.project_type as ProjectType) ?? "ongoing",
+    targetDate: p.target_date ?? undefined,
+    locationLabel: p.location_label,
+    lat: p.lat,
+    lng: p.lng,
+    description: p.description ?? "",
+    beneficiaries: (p.beneficiaries as BeneficiaryRange) ?? "under 100",
+    needs: (p.needs as Project["needs"]) ?? {},
+    status: (p.status as ProjectStatus) ?? "seeking support",
+    partnerOrgIds: undefined,
+  };
 }
 
 // ---------- Generic KPI ----------
@@ -315,6 +380,8 @@ function OrgOverview({
   sms,
   userId,
   onChanged,
+  editableIds,
+  userProjects,
 }: {
   org: UserOrg | null;
   role: string | null;
@@ -323,7 +390,47 @@ function OrgOverview({
   sms: SmsRow[];
   userId: string;
   onChanged: () => void;
+  editableIds: Set<string>;
+  userProjects: UserProjectRow[];
 }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<InitiativeRecord | null>(null);
+
+  function openCreate() {
+    setEditing(null);
+    setDialogOpen(true);
+  }
+  function openEdit(projectId: string) {
+    const row = userProjects.find((p) => p.id === projectId);
+    if (!row) return;
+    setEditing({
+      id: row.id,
+      title: row.title,
+      category: row.category,
+      project_type: row.project_type,
+      location_label: row.location_label,
+      lat: row.lat,
+      lng: row.lng,
+      description: row.description,
+      beneficiaries: row.beneficiaries,
+      status: row.status,
+      needs: (row.needs as InitiativeRecord["needs"]) ?? {},
+      partner_org_refs: row.partner_org_refs ?? [],
+    });
+    setDialogOpen(true);
+  }
+  async function onDelete(projectId: string) {
+    if (!confirm("Delete this initiative?")) return;
+    const { error } = await supabase
+      .from("user_projects")
+      .delete()
+      .eq("id", projectId);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Deleted");
+      onChanged();
+    }
+  }
   const seedOrg = org?.claimed_seed_org_id
     ? orgById(org.claimed_seed_org_id)
     : null;
@@ -467,20 +574,25 @@ function OrgOverview({
       <section className="space-y-3">
         <div className="flex items-end justify-between">
           <div>
-            <h3 className="text-sm font-semibold">Initiatives you support</h3>
+            <h3 className="text-sm font-semibold">My initiatives</h3>
             <p className="text-xs text-muted-foreground">
-              Click an initiative to see full details and manage it.
+              Click an initiative for full details. Use the pencil to edit
+              the ones you own, or add a new one or a collaboration.
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-[10px]">
               {initiatives.length} total
             </Badge>
-            <NewProjectDialog
-              userId={userId}
-              orgId={org?.id ?? null}
-              onCreated={onChanged}
-            />
+            <Button
+              size="sm"
+              onClick={openCreate}
+              disabled={!org?.id}
+              title={!org?.id ? "Save your organisation first on the profile page" : undefined}
+              className="gap-1.5"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add initiative
+            </Button>
           </div>
         </div>
         {initiatives.length === 0 ? (
@@ -494,10 +606,21 @@ function OrgOverview({
                 key={p.id}
                 project={p}
                 onOpen={() => onOpen(p)}
+                editable={editableIds.has(p.id)}
+                onEdit={() => openEdit(p.id)}
+                onDelete={() => onDelete(p.id)}
               />
             ))}
           </div>
         )}
+        <InitiativeDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          userId={userId}
+          orgId={org?.id ?? null}
+          initial={editing}
+          onSaved={onChanged}
+        />
       </section>
 
       {/* SMS submissions for RLOs */}
@@ -653,11 +776,11 @@ function DonorOverview({
         <div className="flex items-end justify-between">
           <div>
             <h3 className="text-sm font-semibold">
-              Initiatives in your focus areas
+              Initiatives I donated to
             </h3>
             <p className="text-xs text-muted-foreground">
-              Matched on your interests. Click any to see details and reach
-              out.
+              Initiatives in your focus areas. Click any to see details and
+              reach out.
             </p>
           </div>
           <Badge variant="secondary" className="text-[10px]">
@@ -690,9 +813,15 @@ function DonorOverview({
 function InitiativeCard({
   project,
   onOpen,
+  editable = false,
+  onEdit,
+  onDelete,
 }: {
   project: Project;
   onOpen: () => void;
+  editable?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }) {
   const org = orgById(project.orgId);
   const kind = org ? orgKind(org) : "RLO";
@@ -786,30 +915,34 @@ function InitiativeCard({
           >
             <MessageSquare className="mr-1 h-3 w-3" /> Message
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-7 w-7 p-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              toast.info("Edit coming soon");
-            }}
-            aria-label="Edit"
-          >
-            <Pencil className="h-3 w-3" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-7 w-7 p-0 text-destructive"
-            onClick={(e) => {
-              e.stopPropagation();
-              toast.info("Remove coming soon");
-            }}
-            aria-label="Remove"
-          >
-            <Trash2 className="h-3 w-3" />
-          </Button>
+          {editable && onEdit && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              aria-label="Edit"
+            >
+              <Pencil className="h-3 w-3" />
+            </Button>
+          )}
+          {editable && onDelete && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0 text-destructive"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              aria-label="Remove"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          )}
         </div>
       </div>
     </Card>

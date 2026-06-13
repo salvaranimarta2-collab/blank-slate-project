@@ -9,10 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
-import { projects as seedProjects, type Project, type BeneficiaryRange, type Category, type ProjectStatus, type ProjectType } from "@/lib/fieldmap-data";
-import { ProjectCard } from "@/components/fieldmap/ProjectCard";
-import { categoryPhotos } from "@/lib/category-photos";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({ meta: [{ title: "My profile — FieldMap" }] }),
@@ -201,20 +198,6 @@ type UserOrg = {
   claimed_seed_org_id: string | null;
 };
 
-type UserProjectRow = {
-  id: string;
-  title: string;
-  category: string;
-  project_type: string;
-  status: string;
-  target_date: string | null;
-  location_label: string;
-  lat: number | null;
-  lng: number | null;
-  description: string | null;
-  beneficiaries: string | null;
-  needs: Record<string, unknown> | null;
-};
 
 function OrgAccountEditor({
   userId,
@@ -226,8 +209,6 @@ function OrgAccountEditor({
   role: "rlo" | "ngo";
 }) {
   const [org, setOrg] = useState<UserOrg | null>(null);
-  const [projects, setProjects] = useState<UserProjectRow[]>([]);
-  const [active, setActive] = useState<Project | null>(null);
   const [contactEmail, setContactEmail] = useState(email);
   const [contactPhone, setContactPhone] = useState("");
   const [loading, setLoading] = useState(true);
@@ -246,7 +227,7 @@ function OrgAccountEditor({
 
   async function reload() {
     setLoading(true);
-    const [{ data: orgRow }, { data: profileRow }, { data: projRows }] = await Promise.all([
+    const [{ data: orgRow }, { data: profileRow }] = await Promise.all([
       supabase
         .from("user_orgs")
         .select("id, name, entity_kind, country, region, lat, lng, description, phone, claimed_seed_org_id")
@@ -255,11 +236,6 @@ function OrgAccountEditor({
         .limit(1)
         .maybeSingle(),
       supabase.from("profiles").select("contact_email, contact_phone").eq("id", userId).maybeSingle(),
-      supabase
-        .from("user_projects")
-        .select("id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs")
-        .eq("owner_id", userId)
-        .order("created_at", { ascending: false }),
     ]);
     const o = (orgRow as UserOrg) ?? null;
     setOrg(o);
@@ -274,7 +250,6 @@ function OrgAccountEditor({
     });
     setContactEmail(profileRow?.contact_email ?? email);
     setContactPhone(profileRow?.contact_phone ?? "");
-    setProjects((projRows as unknown as UserProjectRow[]) ?? []);
     setLoading(false);
   }
   useEffect(() => { reload(); }, [userId]);
@@ -359,214 +334,15 @@ function OrgAccountEditor({
         <Button onClick={save} disabled={saving}>{saving ? "Saving…" : org ? "Save changes" : "Create organisation"}</Button>
       </Card>
 
-      <Card className="space-y-4 p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Initiatives ({projects.length})
-          </h2>
-          <p className="text-[11px] text-muted-foreground">Click to view full details</p>
-        </div>
-        {projects.length === 0 ? (
-          <p className="text-xs text-muted-foreground">No initiatives yet. Add one below.</p>
-        ) : (
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {projects.map((p) => {
-              const photo = categoryPhotos[p.category as Category];
-              return (
-                <li key={p.id}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActive(toFullProject(p, org?.claimed_seed_org_id ?? org?.id ?? "user-org"))
-                    }
-                    className="group flex w-full items-stretch gap-3 overflow-hidden rounded-md border bg-card text-left transition hover:shadow-md"
-                  >
-                    {photo && (
-                      <img
-                        src={photo}
-                        alt={p.category}
-                        className="h-20 w-20 shrink-0 object-cover"
-                      />
-                    )}
-                    <div className="flex min-w-0 flex-1 flex-col justify-center py-2 pr-2">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium group-hover:text-primary">{p.title}</span>
-                      </div>
-                      <p className="truncate text-xs text-muted-foreground">{p.location_label}</p>
-                      <div className="mt-1 flex items-center gap-1.5">
-                        <Badge variant="secondary" className="text-[10px] capitalize">{p.category}</Badge>
-                        <Badge variant="outline" className="text-[10px] capitalize">{p.status}</Badge>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      aria-label="Delete"
-                      className="self-start p-2 text-muted-foreground hover:text-destructive"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (!confirm("Delete this initiative?")) return;
-                        const { error } = await supabase.from("user_projects").delete().eq("id", p.id);
-                        if (error) toast.error(error.message); else { toast.success("Deleted"); reload(); }
-                      }}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        <NewProjectForm userId={userId} orgId={org?.id ?? null} onCreated={reload} />
-      </Card>
+      <p className="text-xs text-muted-foreground">
+        Manage your initiatives from the{" "}
+        <Link to="/dashboard" className="text-primary underline">
+          Dashboard
+        </Link>
+        .
+      </p>
 
-      <ProjectModal
-        project={active}
-        open={!!active}
-        onOpenChange={(o) => !o && setActive(null)}
-        perspectiveOrgId={org?.claimed_seed_org_id ?? null}
-      />
     </>
-  );
-}
-
-function toFullProject(p: UserProjectRow, orgId: string): Project {
-  // Prefer a matching seed project (demo accounts are linked to seed data)
-  const seed = seedProjects.find((s) => s.title === p.title);
-  if (seed) return seed;
-  return {
-    id: p.id,
-    orgId,
-    title: p.title,
-    category: p.category as Category,
-    type: (p.project_type as ProjectType) ?? "ongoing",
-    targetDate: p.target_date ?? undefined,
-    locationLabel: p.location_label,
-    lat: p.lat ?? 0,
-    lng: p.lng ?? 0,
-    description: p.description ?? "",
-    beneficiaries: (p.beneficiaries as BeneficiaryRange) ?? "under 100",
-    needs: (p.needs as Project["needs"]) ?? {},
-    status: (p.status as ProjectStatus) ?? "seeking support",
-  };
-}
-
-function ProjectModal({
-  project,
-  open,
-  onOpenChange,
-  perspectiveOrgId,
-}: {
-  project: Project | null;
-  open: boolean;
-  onOpenChange: (o: boolean) => void;
-  perspectiveOrgId: string | null;
-}) {
-  if (!project) return null;
-  return (
-    <div className={`fixed inset-0 z-[1500] ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
-      <button
-        type="button"
-        onClick={() => onOpenChange(false)}
-        className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
-        aria-label="Close overlay"
-      />
-      <ProjectCard
-        project={project}
-        perspectiveOrgId={perspectiveOrgId}
-        open={open}
-        onOpenChange={onOpenChange}
-        role="seeking_donors"
-        onOrgClick={() => {}}
-      />
-    </div>
-  );
-}
-
-const CATEGORIES = ["energy","water/WASH","education","healthcare","livelihoods","shelter","legal aid","protection","food security"] as const;
-
-function NewProjectForm({ userId, orgId, onCreated }: { userId: string; orgId: string | null; onCreated: () => void }) {
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("education");
-  const [projectType, setProjectType] = useState<"ongoing" | "time-bound">("ongoing");
-  const [location, setLocation] = useState("");
-  const [lat, setLat] = useState("");
-  const [lng, setLng] = useState("");
-  const [description, setDescription] = useState("");
-  const [beneficiaries, setBeneficiaries] = useState("100–500");
-  const [fundingAmount, setFundingAmount] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  if (!open)
-    return (
-      <Button size="sm" variant="outline" onClick={() => setOpen(true)} className="gap-1.5" disabled={!orgId}>
-        <Plus className="h-3.5 w-3.5" /> Add initiative
-        {!orgId ? <span className="ml-1 text-[10px] text-muted-foreground">(save your organisation first)</span> : null}
-      </Button>
-    );
-
-  async function save() {
-    if (!orgId) { toast.error("Save your organisation first"); return; }
-    if (!title || !location || !lat || !lng) { toast.error("Title, location, lat and lng are required"); return; }
-    setSaving(true);
-    const needs: Record<string, unknown> = {};
-    if (fundingAmount) needs.funding = { amount: Number(fundingAmount), currency: "USD" };
-    const { error } = await supabase.from("user_projects").insert({
-      owner_id: userId,
-      org_id: orgId,
-      title, category, project_type: projectType,
-      location_label: location,
-      lat: Number(lat), lng: Number(lng),
-      description,
-      beneficiaries,
-      status: "seeking support",
-      needs: needs as never,
-    });
-    setSaving(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Initiative added");
-    setOpen(false);
-    setTitle(""); setLocation(""); setLat(""); setLng(""); setDescription(""); setFundingAmount("");
-    onCreated();
-  }
-
-  return (
-    <div className="space-y-3 rounded-md border bg-muted/30 p-3">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Title"><Input value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={200} /></Field>
-        <Field label="Category">
-          <select className="w-full rounded-md border bg-background p-2 text-sm" value={category} onChange={(e) => setCategory(e.target.value as (typeof CATEGORIES)[number])}>
-            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </Field>
-        <Field label="Type">
-          <select className="w-full rounded-md border bg-background p-2 text-sm" value={projectType} onChange={(e) => setProjectType(e.target.value as "ongoing" | "time-bound")}>
-            <option value="ongoing">Ongoing</option>
-            <option value="time-bound">Time-bound</option>
-          </select>
-        </Field>
-        <Field label="Beneficiaries">
-          <select className="w-full rounded-md border bg-background p-2 text-sm" value={beneficiaries} onChange={(e) => setBeneficiaries(e.target.value)}>
-            <option value="under 100">under 100</option>
-            <option value="100–500">100–500</option>
-            <option value="500–2,000">500–2,000</option>
-            <option value="2,000+">2,000+</option>
-          </select>
-        </Field>
-        <Field label="Location label"><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Athens, Greece" /></Field>
-        <Field label="Funding target (USD, optional)"><Input value={fundingAmount} onChange={(e) => setFundingAmount(e.target.value)} placeholder="25000" /></Field>
-        <Field label="Latitude"><Input value={lat} onChange={(e) => setLat(e.target.value)} placeholder="37.97" /></Field>
-        <Field label="Longitude"><Input value={lng} onChange={(e) => setLng(e.target.value)} placeholder="23.72" /></Field>
-        <div className="sm:col-span-2">
-          <Field label="Description"><Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={1500} /></Field>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <Button size="sm" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save initiative"}</Button>
-        <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-      </div>
-    </div>
   );
 }
 

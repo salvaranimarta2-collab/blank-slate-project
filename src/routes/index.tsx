@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FieldMap } from "@/components/fieldmap/FieldMap";
 import {
   defaultFilters,
@@ -11,7 +11,14 @@ import { OrgPanel } from "@/components/fieldmap/OrgPanel";
 import { PartnershipsPanel } from "@/components/fieldmap/PartnershipsPanel";
 import { DonorsGrid } from "@/components/fieldmap/DonorsGrid";
 import { RoleSwitcher, type Role } from "@/components/fieldmap/RoleSwitcher";
-import { projects as allProjects, type Project, orgById, orgKind } from "@/lib/fieldmap-data";
+import {
+  getAllProjects,
+  type Project,
+  orgById,
+  orgKind,
+  subscribeExtras,
+} from "@/lib/fieldmap-data";
+import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
@@ -46,9 +53,16 @@ function HomePage() {
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgOpen, setOrgOpen] = useState(false);
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    loadUserProjectsForMap();
+    const unsub = subscribeExtras(() => setTick((t) => t + 1));
+    return () => { unsub(); };
+  }, []);
 
   const visible = useMemo(() => {
-    return allProjects.filter((p) => {
+    return getAllProjects().filter((p: Project) => {
       if (filters.category !== "all" && p.category !== filters.category)
         return false;
       if (filters.type !== "both" && p.type !== filters.type) return false;
@@ -57,7 +71,6 @@ function HomePage() {
         if (!org || orgKind(org) !== filters.entityKind) return false;
       }
       if (filters.country !== "all") {
-        // crude country match via locationLabel suffix
         if (!p.locationLabel.endsWith(filters.country)) return false;
       }
       if (filters.needs.length > 0) {
