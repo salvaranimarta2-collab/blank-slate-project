@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { donors, type Donor, type DonorType } from "@/lib/donors-data";
 import { categories, type Category } from "@/lib/fieldmap-data";
 import { orgColor, orgInitials } from "@/lib/category-photos";
-import { MessageSquare, MapPin, Target, Globe2, Search, X, HandHeart, Sparkles } from "lucide-react";
+import { MessageSquare, MapPin, Target, Globe2, Search, X } from "lucide-react";
 import { ContactDonorDialog } from "@/components/fieldmap/ContactDonorDialog";
 import { useAuth } from "@/lib/use-auth";
 
