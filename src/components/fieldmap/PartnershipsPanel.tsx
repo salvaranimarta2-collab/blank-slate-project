@@ -13,7 +13,7 @@ const currencySymbol = (c: "EUR" | "USD" | "GBP") =>
   c === "EUR" ? "€" : c === "GBP" ? "£" : "$";
 
 function formatAmount(amount: number, currency: "EUR" | "USD" | "GBP") {
-  return `${currencySymbol(currency)}${amount.toLocaleString("en-US")}`;
+  return `${currencySymbol(currency)}${amount.toLocaleString()}`;
 }
 
 function formatDate(iso: string) {
