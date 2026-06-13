@@ -12,8 +12,8 @@ import { DEMO_ACCOUNTS, ensureDemoAccount, type DemoRole } from "@/lib/demo-auth
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — FieldMap" },
-      { name: "description", content: "Create an account or sign in to FieldMap." },
+      { title: "Sign in — Waythrough" },
+      { name: "description", content: "Create an account or sign in to Waythrough." },
     ],
   }),
   component: AuthPage,
@@ -103,7 +103,7 @@ function AuthPage() {
         </div>
         <div className="mb-5">
           <h1 className="text-xl font-semibold">
-            {mode === "signup" ? "Create your FieldMap account" : "Sign in to FieldMap"}
+            {mode === "signup" ? "Create your Waythrough account" : "Sign in to Waythrough"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {mode === "signup"

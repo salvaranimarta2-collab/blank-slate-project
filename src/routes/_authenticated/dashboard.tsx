@@ -39,7 +39,7 @@ import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import type { Category, BeneficiaryRange, ProjectType, ProjectStatus } from "@/lib/fieldmap-data";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — FieldMap" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Waythrough" }] }),
   component: DashboardPage,
 });
 
@@ -660,7 +660,7 @@ function OrgOverview({
               Unclaimed SMS submissions ({sms.length})
             </h3>
             <p className="text-xs text-muted-foreground">
-              Submissions sent to FieldMap by SMS (without an account). Claim
+              Submissions sent to Waythrough by SMS (without an account). Claim
               one to add it to your org's initiatives.
             </p>
           </div>

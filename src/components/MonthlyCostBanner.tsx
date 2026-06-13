@@ -38,7 +38,7 @@ export function MonthlyCostBanner() {
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline justify-between gap-2">
               <p className="truncate text-xs font-medium">
-                Help keep FieldMap running — this month's costs
+                Help keep Waythrough running — this month's costs
               </p>
               <p className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
                 ${RAISED} / ${MONTHLY_GOAL} ({pct}%)

@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "My profile — FieldMap" }] }),
+  head: () => ({ meta: [{ title: "My profile — Waythrough" }] }),
   component: ProfilePage,
 });
 
@@ -294,9 +294,9 @@ function OrgAccountEditor({
           </h2>
           <Badge variant="secondary" className="text-[10px] uppercase">{role === "rlo" ? "RLO" : "NGO"}</Badge>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Your account represents one organisation. This name is shown wherever you appear on FieldMap.
-        </p>
+          <p className="text-xs text-muted-foreground">
+            Your account represents one organisation. This name is shown wherever you appear on Waythrough.
+          </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Organisation name (your account name)">

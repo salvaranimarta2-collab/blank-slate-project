@@ -59,7 +59,7 @@ export const draftDonorMessage = createServerFn({ method: "POST" })
     const donor = data.donor;
     const orgSummary = org
       ? `${org.name} (${org.entity_kind ?? "RLO"}) based in ${org.region ?? org.country ?? "unspecified region"}. ${org.description ?? ""}`
-      : "An organisation on FieldMap.";
+      : "An organisation on Waythrough.";
     const projectSummary = projects.length
       ? projects
           .map(
@@ -115,10 +115,10 @@ Write a personalised outreach message from the sender to the donor.`;
     if (!body) {
       // Fallback: no markers — treat first line as subject, rest as body
       const lines = raw.split(/\r?\n/);
-      subject = subject || lines[0]?.replace(/^subject:\s*/i, "").trim() || `Partnership inquiry from ${org?.name ?? "FieldMap"}`;
+      subject = subject || lines[0]?.replace(/^subject:\s*/i, "").trim() || `Partnership inquiry from ${org?.name ?? "Waythrough"}`;
       body = lines.slice(1).join("\n").trim() || raw;
     }
-    if (!subject) subject = `Partnership inquiry from ${org?.name ?? "FieldMap"}`;
+    if (!subject) subject = `Partnership inquiry from ${org?.name ?? "Waythrough"}`;
 
     return { subject, body };
   });
