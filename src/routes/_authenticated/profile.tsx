@@ -244,7 +244,7 @@ function OrgAccountEditor({
 
   async function reload() {
     setLoading(true);
-    const [{ data: orgRow }, { data: profileRow }, { data: projRows }] = await Promise.all([
+    const [{ data: orgRow }, { data: profileRow }] = await Promise.all([
       supabase
         .from("user_orgs")
         .select("id, name, entity_kind, country, region, lat, lng, description, phone, claimed_seed_org_id")
@@ -253,11 +253,6 @@ function OrgAccountEditor({
         .limit(1)
         .maybeSingle(),
       supabase.from("profiles").select("contact_email, contact_phone").eq("id", userId).maybeSingle(),
-      supabase
-        .from("user_projects")
-        .select("id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs")
-        .eq("owner_id", userId)
-        .order("created_at", { ascending: false }),
     ]);
     const o = (orgRow as UserOrg) ?? null;
     setOrg(o);
@@ -272,7 +267,6 @@ function OrgAccountEditor({
     });
     setContactEmail(profileRow?.contact_email ?? email);
     setContactPhone(profileRow?.contact_phone ?? "");
-    setProjects((projRows as unknown as UserProjectRow[]) ?? []);
     setLoading(false);
   }
   useEffect(() => { reload(); }, [userId]);
