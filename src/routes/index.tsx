@@ -138,6 +138,9 @@ function HomePage() {
         </div>
       </header>
 
+      {accountRole === "donor" && <MonthlyCostBanner />}
+
+
       <AggregateStats />
 
       {role === "seeking_donors" ? (
