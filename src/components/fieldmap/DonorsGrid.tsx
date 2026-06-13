@@ -252,11 +252,18 @@ export function DonorsGrid() {
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((d) => (
-              <Card key={d.id} className="flex flex-col">
-                <CardHeader className="space-y-3 pb-3">
+              <Card
+                key={d.id}
+                className="group relative flex flex-col overflow-hidden border-border/60 transition-all duration-200 hover:-translate-y-0.5 hover:border-[hsl(152_65%_36%)]/40 hover:shadow-lg"
+              >
+                <div
+                  className="absolute inset-x-0 top-0 h-1"
+                  style={{ backgroundColor: orgColor(d.id) }}
+                />
+                <CardHeader className="space-y-3 pb-3 pt-5">
                   <div className="flex items-start gap-3">
                     <div
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm ring-2 ring-background"
                       style={{ backgroundColor: orgColor(d.id) }}
                     >
                       {orgInitials(d.name)}
@@ -266,20 +273,22 @@ export function DonorsGrid() {
                         <h3 className="truncate text-sm font-semibold leading-tight">
                           {d.name}
                         </h3>
-                        <Badge className={typeColor[d.type]}>{d.type}</Badge>
+                        <Badge className={typeColor[d.type] + " shrink-0 text-[10px]"}>
+                          {d.type}
+                        </Badge>
                       </div>
-                      <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         {d.location}
                       </p>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="flex flex-1 flex-col gap-3 pt-0">
-                  <p className="text-xs leading-relaxed text-foreground/80">{d.about}</p>
+                <CardContent className="flex flex-1 flex-col gap-3.5 pt-0">
+                  <p className="text-xs leading-relaxed text-foreground/75">{d.about}</p>
 
                   <div className="space-y-1.5">
-                    <div className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    <div className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                       <Target className="h-3 w-3" /> Interests
                     </div>
                     <div className="flex flex-wrap gap-1">
@@ -287,7 +296,7 @@ export function DonorsGrid() {
                         <Badge
                           key={i}
                           variant={interests.includes(i) ? "default" : "secondary"}
-                          className="capitalize text-[10px]"
+                          className="capitalize text-[10px] font-normal"
                         >
                           {i}
                         </Badge>
@@ -296,7 +305,7 @@ export function DonorsGrid() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <div className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    <div className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                       <Globe2 className="h-3 w-3" /> Regions
                     </div>
                     <div className="flex flex-wrap gap-1">
@@ -304,7 +313,7 @@ export function DonorsGrid() {
                         <Badge
                           key={r}
                           variant={regions.includes(r) ? "default" : "outline"}
-                          className="text-[10px]"
+                          className="text-[10px] font-normal"
                         >
                           {r}
                         </Badge>
@@ -312,18 +321,20 @@ export function DonorsGrid() {
                     </div>
                   </div>
 
-                  <div className="rounded-md border bg-muted/40 p-2 text-[11px]">
+                  <div className="rounded-lg border border-[hsl(152_65%_36%)]/15 bg-[hsl(152_40%_97%)] px-3 py-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                         Recently funded
                       </span>
-                      <span className="font-medium">{d.recentlyFunded} initiatives</span>
+                      <span className="text-xs font-semibold text-[hsl(152_65%_28%)] tabular-nums">
+                        {d.recentlyFunded} initiatives
+                      </span>
                     </div>
                   </div>
 
                   <Button
                     size="sm"
-                    className="mt-auto w-full"
+                    className="mt-auto w-full transition-shadow group-hover:shadow-md"
                     onClick={() => setContactDonor(d)}
                     disabled={!canContact}
                     title={
