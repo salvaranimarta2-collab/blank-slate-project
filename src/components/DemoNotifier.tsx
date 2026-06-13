@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { Heart, HandCoins, MessageCircle, Users, Sparkles, Globe2, FileText, CheckCircle2 } from "lucide-react";
+import { Heart, HandCoins, MessageCircle, Users, Sparkles, FileText, CheckCircle2 } from "lucide-react";
 
 const NOTIFICATIONS: Array<{
   title: string;
