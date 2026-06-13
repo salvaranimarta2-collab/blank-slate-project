@@ -359,66 +359,13 @@ function OrgAccountEditor({
         <Button onClick={save} disabled={saving}>{saving ? "Saving…" : org ? "Save changes" : "Create organisation"}</Button>
       </Card>
 
-      <Card className="space-y-4 p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Initiatives ({projects.length})
-          </h2>
-          <p className="text-[11px] text-muted-foreground">Click to view full details</p>
-        </div>
-        {projects.length === 0 ? (
-          <p className="text-xs text-muted-foreground">No initiatives yet. Add one below.</p>
-        ) : (
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {projects.map((p) => {
-              const photo = categoryPhotos[p.category as Category];
-              return (
-                <li key={p.id}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActive(toFullProject(p, org?.claimed_seed_org_id ?? org?.id ?? "user-org"))
-                    }
-                    className="group flex w-full items-stretch gap-3 overflow-hidden rounded-md border bg-card text-left transition hover:shadow-md"
-                  >
-                    {photo && (
-                      <img
-                        src={photo}
-                        alt={p.category}
-                        className="h-20 w-20 shrink-0 object-cover"
-                      />
-                    )}
-                    <div className="flex min-w-0 flex-1 flex-col justify-center py-2 pr-2">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium group-hover:text-primary">{p.title}</span>
-                      </div>
-                      <p className="truncate text-xs text-muted-foreground">{p.location_label}</p>
-                      <div className="mt-1 flex items-center gap-1.5">
-                        <Badge variant="secondary" className="text-[10px] capitalize">{p.category}</Badge>
-                        <Badge variant="outline" className="text-[10px] capitalize">{p.status}</Badge>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      aria-label="Delete"
-                      className="self-start p-2 text-muted-foreground hover:text-destructive"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (!confirm("Delete this initiative?")) return;
-                        const { error } = await supabase.from("user_projects").delete().eq("id", p.id);
-                        if (error) toast.error(error.message); else { toast.success("Deleted"); reload(); }
-                      }}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        <NewProjectForm userId={userId} orgId={org?.id ?? null} onCreated={reload} />
-      </Card>
+      <p className="text-xs text-muted-foreground">
+        Manage your initiatives from the{" "}
+        <Link to="/dashboard" className="text-primary underline">
+          Dashboard
+        </Link>
+        .
+      </p>
 
       <ProjectModal
         project={active}
