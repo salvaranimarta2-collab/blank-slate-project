@@ -22,6 +22,7 @@ import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
+import { AggregateStats } from "@/components/AggregateStats";
 import logo from "@/assets/fieldmap-logo.png";
 
 export const Route = createFileRoute("/")({
@@ -131,6 +132,7 @@ function HomePage() {
         </div>
       </header>
 
+      <AggregateStats />
 
       {role === "seeking_donors" ? (
         <div className="relative flex-1 overflow-hidden">
