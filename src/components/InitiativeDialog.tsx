@@ -180,7 +180,7 @@ export function InitiativeDialog({
       toast.error("Title, location, latitude and longitude are required");
       return;
     }
-    if (collabMode && !collabProjectId && !editing) {
+    if (collabMode && !collabProjectId && !(initial?.partner_org_refs?.length)) {
       toast.error("Pick the initiative you're collaborating on");
       return;
     }
@@ -199,10 +199,12 @@ export function InitiativeDialog({
     if (expertise.length) needs.expertise = expertise;
 
     // partner_org_refs stores the referenced project id with a "project:" prefix
-    // when we're collaborating on someone else's initiative. Existing refs are kept.
-    const partnerRefs = collabMode && collabProjectId
-      ? [`project:${collabProjectId}`]
-      : initial?.partner_org_refs ?? [];
+    // when we're collaborating on someone else's initiative.
+    const partnerRefs = collabMode
+      ? collabProjectId
+        ? [`project:${collabProjectId}`]
+        : initial?.partner_org_refs ?? []
+      : [];
 
     const payload = {
       title,
