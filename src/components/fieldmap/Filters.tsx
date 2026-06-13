@@ -55,7 +55,10 @@ export function Filters({
     value.entityKind !== "all";
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b bg-card/80 p-3 backdrop-blur">
+    <div className="flex flex-wrap items-center gap-2 border-b bg-card/90 px-4 py-2.5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/70">
+      <span className="mr-1 hidden text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
+        Filter
+      </span>
       <Select
         value={value.category}
         onValueChange={(v) =>

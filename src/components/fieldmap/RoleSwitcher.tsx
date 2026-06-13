@@ -14,14 +14,17 @@ export function RoleSwitcher({
     { id: "seeking_initiatives", label: "I'm looking for Initiatives" },
   ];
   return (
-    <div className="flex gap-1 rounded-md border bg-card p-1">
+    <div className="flex gap-1 rounded-full border bg-card p-1 shadow-sm">
       {roles.map((r) => (
         <Button
           key={r.id}
           size="sm"
           variant={role === r.id ? "default" : "ghost"}
           onClick={() => onChange(r.id)}
-          className="h-7 text-xs"
+          className={
+            "h-7 rounded-full px-3 text-xs transition-all " +
+            (role === r.id ? "shadow-sm" : "text-muted-foreground hover:text-foreground")
+          }
         >
           {r.label}
         </Button>
