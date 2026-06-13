@@ -5,6 +5,7 @@ import {
   type Project,
 } from "@/lib/fieldmap-data";
 import { subscribeExtras } from "@/lib/fieldmap-data";
+import { HandCoins, Users, Globe2, Sprout } from "lucide-react";
 
 function useAnimatedNumber(target: number, duration = 1500) {
   const [display, setDisplay] = useState(0);
@@ -80,44 +81,52 @@ export function AggregateStats() {
 
   const items = [
     {
+      icon: HandCoins,
       label: "Raised",
       value: formatCurrency(animatedTotal),
-      raw: stats.totalEur,
-      suffix: "",
     },
     {
+      icon: Users,
       label: "Organizations",
       value: String(Math.round(animatedOrgs)),
-      raw: stats.orgCount,
-      suffix: "",
     },
     {
+      icon: Globe2,
       label: "Countries",
       value: String(Math.round(animatedCountries)),
-      raw: stats.countryCount,
-      suffix: "",
     },
     {
+      icon: Sprout,
       label: "Initiatives",
       value: String(Math.round(animatedProjects)),
-      raw: stats.projectCount,
-      suffix: "",
     },
   ];
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-6 border-b bg-background px-4 py-2.5">
-      {items.map((item) => (
-        <div key={item.label} className="flex items-center gap-2">
-          <span className="text-lg font-bold tabular-nums text-[hsl(152_65%_36%)]">
-            {item.value}
-            {item.suffix}
-          </span>
-          <span className="text-xs font-medium text-muted-foreground">
-            {item.label}
-          </span>
-        </div>
-      ))}
+    <div className="border-b bg-gradient-to-b from-[hsl(152_40%_97%)] to-background px-4 py-3">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-8 gap-y-2 divide-x divide-border/60">
+        {items.map((item, idx) => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={item.label}
+              className={
+                "flex items-center gap-2.5 " + (idx === 0 ? "" : "pl-8")
+              }
+            >
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[hsl(152_65%_36%)]/10 text-[hsl(152_65%_30%)]">
+                <Icon className="h-3.5 w-3.5" />
+              </span>
+              <span className="text-lg font-bold leading-none tabular-nums text-[hsl(152_65%_28%)]">
+                {item.value}
+              </span>
+              <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                {item.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
