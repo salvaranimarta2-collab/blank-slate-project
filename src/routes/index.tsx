@@ -128,7 +128,9 @@ function HomePage() {
             Recent partnerships
           </Button>
           <RoleSwitcher role={role} onChange={setRole} />
+          <NotificationsBell />
           <HeaderUserMenu />
+
         </div>
       </header>
 
