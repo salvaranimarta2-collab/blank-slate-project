@@ -813,9 +813,15 @@ function DonorOverview({
 function InitiativeCard({
   project,
   onOpen,
+  editable = false,
+  onEdit,
+  onDelete,
 }: {
   project: Project;
   onOpen: () => void;
+  editable?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }) {
   const org = orgById(project.orgId);
   const kind = org ? orgKind(org) : "RLO";
