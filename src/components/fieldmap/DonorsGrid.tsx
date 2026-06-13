@@ -38,10 +38,21 @@ const donorTypes: DonorType[] = [
 ];
 
 export function DonorsGrid() {
+  // Shuffle donor order once per mount (each page open).
+  const [shuffledDonors] = useState(() => {
+    const arr = [...donors];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  });
+
   const allRegions = useMemo(
     () => Array.from(new Set(donors.flatMap((d) => d.regions))).sort(),
     [],
   );
+
 
   const [query, setQuery] = useState("");
   const [type, setType] = useState<DonorType | "all">("all");
