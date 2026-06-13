@@ -126,10 +126,10 @@ function HomePage() {
             size="sm"
             variant="outline"
             onClick={() => setPartnershipsOpen(true)}
-            className="gap-1.5 border-[hsl(212_85%_48%)]/40 text-[hsl(212_85%_48%)] hover:bg-[hsl(212_85%_48%)]/10 hover:text-[hsl(212_85%_48%)]"
+            className="gap-1.5 border-[hsl(152_65%_36%)]/40 text-[hsl(152_65%_36%)] hover:bg-[hsl(152_65%_36%)]/10 hover:text-[hsl(152_65%_36%)]"
           >
             <Handshake className="h-3.5 w-3.5" />
-            Recent partnerships
+            Recent activity
           </Button>
           <RoleSwitcher role={role} onChange={setRole} />
           <NotificationsBell />
