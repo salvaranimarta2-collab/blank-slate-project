@@ -144,6 +144,20 @@ export function InitiativeDialog({
     return getAllProjects().filter((p) => p.id !== initial?.id);
   }, [initial?.id, open]);
 
+  const [collabSearch, setCollabSearch] = useState("");
+  const filteredCollabOptions = useMemo(() => {
+    const q = collabSearch.trim().toLowerCase();
+    if (!q) return collabOptions.slice(0, 50);
+    return collabOptions
+      .filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.locationLabel.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q),
+      )
+      .slice(0, 50);
+  }, [collabOptions, collabSearch]);
+
   function onPickCollab(id: string) {
     setCollabProjectId(id);
     const p = collabOptions.find((x) => x.id === id);
@@ -154,6 +168,8 @@ export function InitiativeDialog({
     setLng(String(p.lng));
     if (!category || category === "education") setCategory(p.category);
   }
+
+  const selectedCollab = collabOptions.find((p) => p.id === collabProjectId);
 
   async function save() {
     if (!orgId) {
