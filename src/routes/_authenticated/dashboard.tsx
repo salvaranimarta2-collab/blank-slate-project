@@ -43,16 +43,6 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type OutreachRow = {
-  id: string;
-  from_user_id: string;
-  to_user_id: string | null;
-  to_org_ref: string;
-  to_project_ref: string | null;
-  channel: "sms" | "in_app";
-  message: string | null;
-  created_at: string;
-};
 
 type ThreadRow = {
   id: string;
@@ -1129,77 +1119,7 @@ function SmsClaimCard({
   );
 }
 
-// ---------- Outreach / Threads (unchanged) ----------
-
-function OutreachList({
-  userId,
-  direction,
-}: {
-  userId: string;
-  direction: "sent" | "received";
-}) {
-  const [rows, setRows] = useState<OutreachRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const col = direction === "sent" ? "from_user_id" : "to_user_id";
-    supabase
-      .from("outreach_log")
-      .select("*")
-      .eq(col, userId)
-      .order("created_at", { ascending: false })
-      .limit(100)
-      .then(({ data }) => {
-        setRows((data as OutreachRow[]) ?? []);
-        setLoading(false);
-      });
-  }, [userId, direction]);
-
-  if (loading)
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
-  if (rows.length === 0)
-    return (
-      <Card className="p-6 text-center text-sm text-muted-foreground">
-        {direction === "sent"
-          ? "You haven't reached out yet. Click any project on the map to start a conversation."
-          : "Nobody has reached out yet."}
-      </Card>
-    );
-
-  return (
-    <ul className="space-y-2">
-      {rows.map((r) => (
-        <li key={r.id}>
-          <Card className="space-y-1 p-3">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                {new Date(r.created_at).toLocaleString()}
-              </span>
-              <Badge
-                variant={r.channel === "in_app" ? "default" : "secondary"}
-                className="text-[10px] uppercase"
-              >
-                {r.channel === "in_app" ? "In-app" : "SMS"}
-              </Badge>
-            </div>
-            <div className="text-sm">
-              {direction === "sent" ? "→ " : "← "}
-              <span className="font-medium">{r.to_org_ref}</span>
-              {r.to_project_ref ? (
-                <span className="text-muted-foreground">
-                  {" "}
-                  · {r.to_project_ref}
-                </span>
-              ) : null}
-            </div>
-            {r.message && (
-              <p className="text-xs text-muted-foreground">"{r.message}"</p>
-            )}
-          </Card>
-        </li>
-      ))}
-    </ul>
-  );
-}
+// ---------- Threads ----------
 
 function ThreadsList({ userId }: { userId: string }) {
   const [threads, setThreads] = useState<ThreadRow[]>([]);
