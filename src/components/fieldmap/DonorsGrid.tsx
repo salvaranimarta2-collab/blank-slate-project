@@ -282,19 +282,19 @@ export function DonorsGrid() {
                     </div>
                   </div>
 
-                  <Button asChild size="sm" className="mt-auto w-full">
-                    <a
-                      href={
-                        d.contact.includes("@")
-                          ? `mailto:${d.contact}?subject=${encodeURIComponent(
-                              "Partnership enquiry via FieldMap",
-                            )}`
-                          : "#"
-                      }
-                    >
-                      <Mail className="mr-1.5 h-3.5 w-3.5" />
-                      Contact donor
-                    </a>
+                  <Button
+                    size="sm"
+                    className="mt-auto w-full"
+                    onClick={() => setContactDonor(d)}
+                    disabled={!canContact}
+                    title={
+                      canContact
+                        ? undefined
+                        : "Sign in as an RLO or NGO to contact donors"
+                    }
+                  >
+                    <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
+                    Contact donor
                   </Button>
                 </CardContent>
               </Card>
@@ -302,6 +302,24 @@ export function DonorsGrid() {
           </div>
         )}
       </div>
+
+      {contactDonor && (
+        <ContactDonorDialog
+          open={!!contactDonor}
+          onOpenChange={(o) => !o && setContactDonor(null)}
+          donor={{
+            id: contactDonor.id,
+            name: contactDonor.name,
+            type: contactDonor.type,
+            location: contactDonor.location,
+            about: contactDonor.about,
+            interests: contactDonor.interests,
+            regions: contactDonor.regions,
+            ticketSize: contactDonor.ticketSize,
+            recentlyFunded: contactDonor.recentlyFunded,
+          }}
+        />
+      )}
     </div>
   );
 }
