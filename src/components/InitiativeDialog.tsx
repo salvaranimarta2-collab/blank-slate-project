@@ -264,50 +264,91 @@ export function InitiativeDialog({
           </Button>
         </div>
 
-        {!editing && (
-          <div className="mb-4 flex gap-2 rounded-md border bg-muted/40 p-1">
-            <button
-              type="button"
-              onClick={() => setCollabMode(false)}
-              className={`flex-1 rounded px-3 py-1.5 text-xs font-medium transition ${
-                !collabMode ? "bg-background shadow" : "text-muted-foreground"
-              }`}
-            >
-              <Plus className="mr-1 inline h-3 w-3" /> New initiative
-            </button>
-            <button
-              type="button"
-              onClick={() => setCollabMode(true)}
-              className={`flex-1 rounded px-3 py-1.5 text-xs font-medium transition ${
-                collabMode ? "bg-background shadow" : "text-muted-foreground"
-              }`}
-            >
-              <Handshake className="mr-1 inline h-3 w-3" /> Add collaboration
-            </button>
-          </div>
-        )}
+        <div className="mb-4 flex gap-2 rounded-md border bg-muted/40 p-1">
+          <button
+            type="button"
+            onClick={() => setCollabMode(false)}
+            className={`flex-1 rounded px-3 py-1.5 text-xs font-medium transition ${
+              !collabMode ? "bg-background shadow" : "text-muted-foreground"
+            }`}
+          >
+            <Plus className="mr-1 inline h-3 w-3" /> Standalone initiative
+          </button>
+          <button
+            type="button"
+            onClick={() => setCollabMode(true)}
+            className={`flex-1 rounded px-3 py-1.5 text-xs font-medium transition ${
+              collabMode ? "bg-background shadow" : "text-muted-foreground"
+            }`}
+          >
+            <Handshake className="mr-1 inline h-3 w-3" /> Collaboration
+          </button>
+        </div>
 
-        {collabMode && !editing && (
+        {collabMode && (
           <div className="mb-4 space-y-2 rounded-md border border-[hsl(212_85%_48%)]/40 bg-[hsl(212_85%_48%)]/5 p-3">
-            <Label className="text-xs">Collaborating on</Label>
-            <select
-              className="w-full rounded-md border bg-background p-2 text-sm"
-              value={collabProjectId}
-              onChange={(e) => onPickCollab(e.target.value)}
-            >
-              <option value="">Select an initiative…</option>
-              {collabOptions.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.title} — {p.locationLabel}
-                </option>
-              ))}
-            </select>
+            <Label className="text-xs">Collaboration with</Label>
+            {selectedCollab ? (
+              <div className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm">
+                <div className="min-w-0">
+                  <div className="truncate font-medium">{selectedCollab.title}</div>
+                  <div className="truncate text-[11px] text-muted-foreground">
+                    {selectedCollab.locationLabel} · {selectedCollab.category}
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 px-2 text-[11px]"
+                  onClick={() => {
+                    setCollabProjectId("");
+                    setCollabSearch("");
+                  }}
+                >
+                  Change
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Input
+                  value={collabSearch}
+                  onChange={(e) => setCollabSearch(e.target.value)}
+                  placeholder="Search initiatives by title, place, category…"
+                  className="h-9"
+                />
+                <div className="max-h-48 overflow-y-auto rounded-md border bg-background">
+                  {filteredCollabOptions.length === 0 ? (
+                    <div className="p-3 text-xs text-muted-foreground">No matches.</div>
+                  ) : (
+                    <ul className="divide-y">
+                      {filteredCollabOptions.map((p) => (
+                        <li key={p.id}>
+                          <button
+                            type="button"
+                            onClick={() => onPickCollab(p.id)}
+                            className="block w-full px-3 py-2 text-left text-xs hover:bg-accent"
+                          >
+                            <div className="font-medium">{p.title}</div>
+                            <div className="text-[11px] text-muted-foreground">
+                              {p.locationLabel} · {p.category}
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </>
+            )}
             {collabProjectId && (
               <p className="text-[11px] text-muted-foreground">
-                Location auto-filled from the chosen initiative. Fill in the
-                rest with your own contribution to the collaboration.
+                Location auto-filled from the chosen initiative. The rest of the
+                fields are your own contribution to this collaboration.
               </p>
             )}
+          </div>
+        )}
           </div>
         )}
 
