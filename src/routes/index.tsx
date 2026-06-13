@@ -132,6 +132,7 @@ function HomePage() {
         </div>
       </header>
 
+      <AggregateStats />
 
       {role === "seeking_donors" ? (
         <div className="relative flex-1 overflow-hidden">
