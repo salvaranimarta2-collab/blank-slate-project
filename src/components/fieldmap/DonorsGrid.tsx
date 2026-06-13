@@ -81,7 +81,7 @@ export function DonorsGrid() {
       }
       return true;
     });
-  }, [query, type, interests, regions]);
+  }, [query, type, interests, regions, shuffledDonors]);
 
   const hasActive =
     type !== "all" ||
