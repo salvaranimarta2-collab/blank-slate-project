@@ -24,6 +24,8 @@ import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { AggregateStats } from "@/components/AggregateStats";
+import { MonthlyCostBanner } from "@/components/MonthlyCostBanner";
+import { useAuth } from "@/lib/use-auth";
 import logo from "@/assets/fieldmap-logo.png";
 
 export const Route = createFileRoute("/")({
@@ -48,6 +50,7 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const [role, setRole] = useState<Role>("seeking_initiatives");
+  const { role: accountRole } = useAuth();
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [selected, setSelected] = useState<Project | null>(null);
   const [projectOpen, setProjectOpen] = useState(false);
@@ -134,6 +137,9 @@ function HomePage() {
 
         </div>
       </header>
+
+      {accountRole === "donor" && <MonthlyCostBanner />}
+
 
       <AggregateStats />
 
