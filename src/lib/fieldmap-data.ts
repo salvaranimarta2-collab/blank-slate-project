@@ -757,11 +757,34 @@ export const countries = Array.from(
   new Set(organizations.map((o) => o.country)),
 ).sort();
 
+// Runtime registry for user-created orgs/projects so they render on the
+// map alongside seed data without mutating the seed arrays.
+const extraOrgs = new Map<string, Organization>();
+let extraProjects: Project[] = [];
+const listeners = new Set<() => void>();
+
+export function registerExtraOrgs(orgs: Organization[]) {
+  for (const o of orgs) extraOrgs.set(o.id, o);
+  listeners.forEach((fn) => fn());
+}
+export function registerExtraProjects(ps: Project[]) {
+  extraProjects = extraProjects.filter((p) => !ps.some((n) => n.id === p.id));
+  for (const p of ps) extraProjects.push(p);
+  listeners.forEach((fn) => fn());
+}
+export function subscribeExtras(fn: () => void) {
+  listeners.add(fn);
+  return () => { listeners.delete(fn); };
+}
+export function getAllProjects(): Project[] {
+  return [...projects, ...extraProjects];
+}
+
 export function orgById(id: string) {
-  return organizations.find((o) => o.id === id);
+  return organizations.find((o) => o.id === id) ?? extraOrgs.get(id);
 }
 export function projectsByOrg(orgId: string) {
-  return projects.filter((p) => p.orgId === orgId);
+  return getAllProjects().filter((p) => p.orgId === orgId);
 }
 
 export function orgKind(o: Organization | undefined | null): EntityKind {
