@@ -31,7 +31,7 @@ import logo from "@/assets/waythrough-logo.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Waythrough — connecting grassroot RLOs, NGOs and donors" },
+      { title: "Waythrough — Connecting grassroot RLOs, NGOs and donors" },
       {
         name: "description",
         content:
@@ -117,7 +117,7 @@ function HomePage() {
               Waythrough
             </h1>
             <p className="text-[11px] text-muted-foreground">
-              connecting grassroot RLOs, NGOs and donors
+              Connecting grassroot RLOs, NGOs and donors
             </p>
           </div>
         </div>
