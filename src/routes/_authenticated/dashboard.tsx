@@ -115,10 +115,6 @@ function DashboardPage() {
       </div>
 
       {tab === "overview" && <Overview userId={user.id} role={role} />}
-      {tab === "sent" && <OutreachList userId={user.id} direction="sent" />}
-      {tab === "received" && (
-        <OutreachList userId={user.id} direction="received" />
-      )}
       {tab === "threads" && <ThreadsList userId={user.id} />}
     </Shell>
   );
