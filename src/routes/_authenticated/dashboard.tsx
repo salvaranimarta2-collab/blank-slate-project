@@ -915,30 +915,34 @@ function InitiativeCard({
           >
             <MessageSquare className="mr-1 h-3 w-3" /> Message
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-7 w-7 p-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              toast.info("Edit coming soon");
-            }}
-            aria-label="Edit"
-          >
-            <Pencil className="h-3 w-3" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-7 w-7 p-0 text-destructive"
-            onClick={(e) => {
-              e.stopPropagation();
-              toast.info("Remove coming soon");
-            }}
-            aria-label="Remove"
-          >
-            <Trash2 className="h-3 w-3" />
-          </Button>
+          {editable && onEdit && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              aria-label="Edit"
+            >
+              <Pencil className="h-3 w-3" />
+            </Button>
+          )}
+          {editable && onDelete && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0 text-destructive"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              aria-label="Remove"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          )}
         </div>
       </div>
     </Card>
