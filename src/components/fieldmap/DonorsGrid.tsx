@@ -47,6 +47,9 @@ export function DonorsGrid() {
   const [type, setType] = useState<DonorType | "all">("all");
   const [interests, setInterests] = useState<Category[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
+  const [contactDonor, setContactDonor] = useState<Donor | null>(null);
+  const { role } = useAuth();
+  const canContact = role === "rlo" || role === "ngo";
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
