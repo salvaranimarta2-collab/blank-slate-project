@@ -573,20 +573,25 @@ function OrgOverview({
       <section className="space-y-3">
         <div className="flex items-end justify-between">
           <div>
-            <h3 className="text-sm font-semibold">Initiatives you support</h3>
+            <h3 className="text-sm font-semibold">My initiatives</h3>
             <p className="text-xs text-muted-foreground">
-              Click an initiative to see full details and manage it.
+              Click an initiative for full details. Use the pencil to edit
+              the ones you own, or add a new one or a collaboration.
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-[10px]">
               {initiatives.length} total
             </Badge>
-            <NewProjectDialog
-              userId={userId}
-              orgId={org?.id ?? null}
-              onCreated={onChanged}
-            />
+            <Button
+              size="sm"
+              onClick={openCreate}
+              disabled={!org?.id}
+              title={!org?.id ? "Save your organisation first on the profile page" : undefined}
+              className="gap-1.5"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add initiative
+            </Button>
           </div>
         </div>
         {initiatives.length === 0 ? (
@@ -600,10 +605,21 @@ function OrgOverview({
                 key={p.id}
                 project={p}
                 onOpen={() => onOpen(p)}
+                editable={editableIds.has(p.id)}
+                onEdit={() => openEdit(p.id)}
+                onDelete={() => onDelete(p.id)}
               />
             ))}
           </div>
         )}
+        <InitiativeDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          userId={userId}
+          orgId={org?.id ?? null}
+          initial={editing}
+          onSaved={onChanged}
+        />
       </section>
 
       {/* SMS submissions for RLOs */}
