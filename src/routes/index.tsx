@@ -53,9 +53,16 @@ function HomePage() {
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgOpen, setOrgOpen] = useState(false);
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    loadUserProjectsForMap();
+    const unsub = subscribeExtras(() => setTick((t) => t + 1));
+    return () => { unsub(); };
+  }, []);
 
   const visible = useMemo(() => {
-    return allProjects.filter((p) => {
+    return getAllProjects().filter((p: Project) => {
       if (filters.category !== "all" && p.category !== filters.category)
         return false;
       if (filters.type !== "both" && p.type !== filters.type) return false;
@@ -64,7 +71,6 @@ function HomePage() {
         if (!org || orgKind(org) !== filters.entityKind) return false;
       }
       if (filters.country !== "all") {
-        // crude country match via locationLabel suffix
         if (!p.locationLabel.endsWith(filters.country)) return false;
       }
       if (filters.needs.length > 0) {
