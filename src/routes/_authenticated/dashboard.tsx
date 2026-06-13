@@ -852,8 +852,6 @@ function InitiativeCard({
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
-  const org = orgById(project.orgId);
-  const kind = org ? orgKind(org) : "RLO";
   const photo = categoryPhotos[project.category];
   const funding = project.needs.funding;
   let raised = funding?.raised;
@@ -866,6 +864,7 @@ function InitiativeCard({
   const pct = funding
     ? Math.min(100, Math.round(((raised ?? 0) / funding.amount) * 100))
     : 0;
+  const isCollab = (project.partnerOrgIds ?? []).length > 0;
 
   return (
     <Card
@@ -886,16 +885,24 @@ function InitiativeCard({
         >
           {project.category}
         </Badge>
-        <Badge
-          className={
-            "absolute right-2 top-2 text-[10px] " +
-            (kind === "NGO"
-              ? "bg-[hsl(212_85%_48%)] text-white"
-              : "bg-[hsl(152_65%_36%)] text-white")
-          }
-        >
-          {kind}
-        </Badge>
+        {editable ? (
+          isCollab && (
+            <Badge className="absolute right-2 top-2 text-[10px] bg-[hsl(212_85%_48%)] text-white">
+              Collaboration
+            </Badge>
+          )
+        ) : (
+          <Badge
+            className={
+              "absolute right-2 top-2 text-[10px] " +
+              (kind === "NGO"
+                ? "bg-[hsl(212_85%_48%)] text-white"
+                : "bg-[hsl(152_65%_36%)] text-white")
+            }
+          >
+            {kind}
+          </Badge>
+        )}
         <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
           <h4 className="line-clamp-2 text-sm font-semibold leading-tight">
             {project.title}
