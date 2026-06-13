@@ -21,6 +21,7 @@ import {
   MessageSquare,
   TrendingUp,
   Sparkles,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
