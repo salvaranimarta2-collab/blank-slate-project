@@ -77,8 +77,6 @@ function DashboardPage() {
 
   const tabs: { id: typeof tab; label: string }[] = [
     { id: "overview", label: "Overview" },
-    { id: "sent", label: "I contacted" },
-    { id: "received", label: "Contacted me" },
     { id: "threads", label: "Messages" },
   ];
 
