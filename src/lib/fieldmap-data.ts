@@ -101,7 +101,7 @@ export const organizations: Organization[] = [
     lng: 4.3736,
     phone: "+31152780000",
     description:
-      "TU Delft student-led NGO designing, financing, and installing solar PV systems for refugee-serving facilities worldwide. Born out of the Energy Club at TU Delft in 2017.",
+      "Student/youth-led organisation designing, financing, and installing solar PV systems for refugee-serving facilities worldwide. Born out of the Energy Club at TU Delft in 2017.",
     yearFounded: 2017,
     orgType: "local NGO",
     brings: ["ground delivery capacity", "volunteer network"],
