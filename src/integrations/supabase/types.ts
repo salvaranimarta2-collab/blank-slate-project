@@ -14,16 +14,445 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      donor_profiles: {
+        Row: {
+          blurb: string | null
+          donor_kind: string | null
+          focus_areas: string[]
+          hq_country: string | null
+          id: string
+          interests: string[]
+          organisation_name: string | null
+          recently_funded: number
+          regions: string[]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          blurb?: string | null
+          donor_kind?: string | null
+          focus_areas?: string[]
+          hq_country?: string | null
+          id: string
+          interests?: string[]
+          organisation_name?: string | null
+          recently_funded?: number
+          regions?: string[]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          blurb?: string | null
+          donor_kind?: string | null
+          focus_areas?: string[]
+          hq_country?: string | null
+          id?: string
+          interests?: string[]
+          organisation_name?: string | null
+          recently_funded?: number
+          regions?: string[]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          body: string
+          created_at: string
+          from_user_id: string
+          id: string
+          thread_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          from_user_id: string
+          id?: string
+          thread_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          related_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          kind: string
+          link?: string | null
+          read_at?: string | null
+          related_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          related_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      outreach_log: {
+        Row: {
+          channel: string
+          created_at: string
+          from_user_id: string
+          id: string
+          message: string | null
+          to_org_ref: string
+          to_project_ref: string | null
+          to_user_id: string | null
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          from_user_id: string
+          id?: string
+          message?: string | null
+          to_org_ref: string
+          to_project_ref?: string | null
+          to_user_id?: string | null
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          message?: string | null
+          to_org_ref?: string
+          to_project_ref?: string | null
+          to_user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sms_submissions: {
+        Row: {
+          beneficiaries: string | null
+          category: string
+          claimed_at: string | null
+          claimed_by_user_id: string | null
+          claimed_project_id: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          lat: number
+          lng: number
+          location_label: string
+          needs: Json
+          project_type: string
+          submitted_at: string
+          suggested_seed_org_id: string | null
+          target_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          beneficiaries?: string | null
+          category: string
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          claimed_project_id?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat: number
+          lng: number
+          location_label: string
+          needs?: Json
+          project_type?: string
+          submitted_at?: string
+          suggested_seed_org_id?: string | null
+          target_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          beneficiaries?: string | null
+          category?: string
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          claimed_project_id?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat?: number
+          lng?: number
+          location_label?: string
+          needs?: Json
+          project_type?: string
+          submitted_at?: string
+          suggested_seed_org_id?: string | null
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sms_submissions_claimed_project_id_fkey"
+            columns: ["claimed_project_id"]
+            isOneToOne: false
+            referencedRelation: "user_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      threads: {
+        Row: {
+          created_at: string
+          id: string
+          participant_a: string
+          participant_b: string
+          project_ref: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          participant_a: string
+          participant_b: string
+          project_ref?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          participant_a?: string
+          participant_b?: string
+          project_ref?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_orgs: {
+        Row: {
+          brings: string[]
+          claimed_seed_org_id: string | null
+          country: string | null
+          created_at: string
+          description: string | null
+          entity_kind: string
+          id: string
+          lat: number | null
+          lng: number | null
+          name: string
+          org_type: string | null
+          owner_id: string
+          phone: string | null
+          region: string | null
+          updated_at: string
+          year_founded: number | null
+        }
+        Insert: {
+          brings?: string[]
+          claimed_seed_org_id?: string | null
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          entity_kind: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          name: string
+          org_type?: string | null
+          owner_id: string
+          phone?: string | null
+          region?: string | null
+          updated_at?: string
+          year_founded?: number | null
+        }
+        Update: {
+          brings?: string[]
+          claimed_seed_org_id?: string | null
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          entity_kind?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          org_type?: string | null
+          owner_id?: string
+          phone?: string | null
+          region?: string | null
+          updated_at?: string
+          year_founded?: number | null
+        }
+        Relationships: []
+      }
+      user_projects: {
+        Row: {
+          beneficiaries: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          lat: number
+          lng: number
+          location_label: string
+          needs: Json
+          org_id: string | null
+          owner_id: string
+          partner_org_refs: string[]
+          photos: string[]
+          project_type: string
+          seed_org_id: string | null
+          status: string
+          target_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          beneficiaries?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat: number
+          lng: number
+          location_label: string
+          needs?: Json
+          org_id?: string | null
+          owner_id: string
+          partner_org_refs?: string[]
+          photos?: string[]
+          project_type?: string
+          seed_org_id?: string | null
+          status?: string
+          target_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          beneficiaries?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat?: number
+          lng?: number
+          location_label?: string
+          needs?: Json
+          org_id?: string | null
+          owner_id?: string
+          partner_org_refs?: string[]
+          photos?: string[]
+          project_type?: string
+          seed_org_id?: string | null
+          status?: string
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_projects_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "user_orgs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "rlo" | "ngo" | "donor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +579,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["rlo", "ngo", "donor"],
+    },
   },
 } as const
