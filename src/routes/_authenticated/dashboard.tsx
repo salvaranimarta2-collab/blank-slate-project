@@ -949,17 +949,19 @@ function InitiativeCard({
           </div>
         )}
         <div className="flex gap-1.5 pt-1">
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-7 flex-1 text-[11px]"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen();
-            }}
-          >
-            <MessageSquare className="mr-1 h-3 w-3" /> Message
-          </Button>
+          {!editable && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 flex-1 text-[11px]"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpen();
+              }}
+            >
+              <MessageSquare className="mr-1 h-3 w-3" /> Message
+            </Button>
+          )}
           {editable && onEdit && (
             <Button
               size="sm"
