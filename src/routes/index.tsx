@@ -24,6 +24,8 @@ import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { AggregateStats } from "@/components/AggregateStats";
+import { MonthlyCostBanner } from "@/components/MonthlyCostBanner";
+import { useAuth } from "@/lib/use-auth";
 import logo from "@/assets/fieldmap-logo.png";
 
 export const Route = createFileRoute("/")({
