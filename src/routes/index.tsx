@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FieldMap } from "@/components/fieldmap/FieldMap";
 import {
   defaultFilters,
@@ -11,7 +11,14 @@ import { OrgPanel } from "@/components/fieldmap/OrgPanel";
 import { PartnershipsPanel } from "@/components/fieldmap/PartnershipsPanel";
 import { DonorsGrid } from "@/components/fieldmap/DonorsGrid";
 import { RoleSwitcher, type Role } from "@/components/fieldmap/RoleSwitcher";
-import { projects as allProjects, type Project, orgById, orgKind } from "@/lib/fieldmap-data";
+import {
+  getAllProjects,
+  type Project,
+  orgById,
+  orgKind,
+  subscribeExtras,
+} from "@/lib/fieldmap-data";
+import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
