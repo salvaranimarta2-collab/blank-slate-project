@@ -22,6 +22,7 @@ import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
+import { NotificationsBell } from "@/components/NotificationsBell";
 import { AggregateStats } from "@/components/AggregateStats";
 import logo from "@/assets/fieldmap-logo.png";
 
@@ -128,7 +129,9 @@ function HomePage() {
             Recent partnerships
           </Button>
           <RoleSwitcher role={role} onChange={setRole} />
+          <NotificationsBell />
           <HeaderUserMenu />
+
         </div>
       </header>
 
