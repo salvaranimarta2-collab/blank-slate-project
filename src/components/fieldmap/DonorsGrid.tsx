@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { donors, type Donor, type DonorType } from "@/lib/donors-data";
 import { categories, type Category } from "@/lib/fieldmap-data";
 import { orgColor, orgInitials } from "@/lib/category-photos";
-import { MessageSquare, MapPin, Target, Globe2, Search, X } from "lucide-react";
+import { MessageSquare, MapPin, Target, Globe2, Search, X, HandHeart, Sparkles } from "lucide-react";
 import { ContactDonorDialog } from "@/components/fieldmap/ContactDonorDialog";
 import { useAuth } from "@/lib/use-auth";
 
@@ -97,25 +97,46 @@ export function DonorsGrid() {
   }
 
   return (
-    <div className="h-full w-full overflow-y-auto bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-6">
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold">Top donors</h2>
-          <p className="text-sm text-muted-foreground">
-            A curated list of funders actively supporting refugee-led and humanitarian
-            initiatives. Filter by interest or region to find the right fit.
-          </p>
+    <div className="h-full w-full overflow-y-auto bg-gradient-to-b from-[hsl(40_40%_98%)] via-background to-[hsl(152_30%_97%)]">
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        {/* Hero header */}
+        <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-[hsl(152_65%_36%)]/15 bg-card/70 px-6 py-5 shadow-sm backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[hsl(152_65%_36%)]/10 text-[hsl(152_65%_30%)]">
+              <HandHeart className="h-5 w-5" />
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-semibold tracking-tight">Top donors</h2>
+                <span className="inline-flex items-center gap-1 rounded-full bg-[hsl(152_65%_36%)]/10 px-2 py-0.5 text-[10px] font-medium text-[hsl(152_65%_28%)]">
+                  <Sparkles className="h-2.5 w-2.5" /> Curated
+                </span>
+              </div>
+              <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Funders actively supporting refugee-led and humanitarian
+                initiatives. Filter by interest or region to find the right fit.
+              </p>
+            </div>
+          </div>
+          <div className="hidden shrink-0 text-right sm:block">
+            <div className="text-2xl font-bold leading-none text-[hsl(152_65%_28%)] tabular-nums">
+              {donors.length}
+            </div>
+            <div className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Active funders
+            </div>
+          </div>
         </div>
 
         {/* Filter bar */}
-        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border bg-card/80 p-3">
+        <div className="mb-5 flex flex-wrap items-center gap-2 rounded-xl border bg-card/80 p-2.5 shadow-sm backdrop-blur">
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search donors…"
-              className="h-8 w-56 pl-7 text-xs"
+              className="h-8 w-56 pl-8 text-xs"
             />
           </div>
 
@@ -212,14 +233,21 @@ export function DonorsGrid() {
             </Button>
           )}
 
-          <div className="ml-auto text-xs text-muted-foreground">
-            {filtered.length} {filtered.length === 1 ? "donor" : "donors"}
+          <div className="ml-auto text-xs font-medium text-muted-foreground">
+            <span className="tabular-nums text-foreground">{filtered.length}</span>{" "}
+            {filtered.length === 1 ? "donor" : "donors"}
           </div>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="rounded-lg border bg-card/60 p-10 text-center text-sm text-muted-foreground">
-            No donors match these filters. Try removing one or two to widen the search.
+          <div className="rounded-2xl border border-dashed bg-card/60 p-12 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+              <Search className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="text-sm font-medium">No donors match these filters</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Try removing one or two filters to widen the search.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
