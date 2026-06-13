@@ -349,8 +349,6 @@ export function InitiativeDialog({
             )}
           </div>
         )}
-          </div>
-        )}
 
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Title">
