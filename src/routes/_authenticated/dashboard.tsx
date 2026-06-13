@@ -33,7 +33,9 @@ import {
 import { donors as seedDonors } from "@/lib/donors-data";
 import { categoryPhotos, orgColor, orgInitials } from "@/lib/category-photos";
 import { ProjectCard } from "@/components/fieldmap/ProjectCard";
-import { NewProjectDialog } from "@/components/NewProjectDialog";
+import { InitiativeDialog, type InitiativeRecord } from "@/components/InitiativeDialog";
+import { loadUserProjectsForMap } from "@/lib/load-user-projects";
+import type { Category, BeneficiaryRange, ProjectType, ProjectStatus } from "@/lib/fieldmap-data";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — FieldMap" }] }),
