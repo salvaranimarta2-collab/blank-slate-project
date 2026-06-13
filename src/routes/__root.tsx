@@ -77,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Waythrough — connecting grassroot RLOs, NGOs and donors" },
+      { title: "Waythrough — Connecting grassroot RLOs, NGOs and donors" },
       { name: "description", content: "Waythrough connects grassroot RLOs, NGOs and donors. One map, one set of pins, identical treatment for every project." },
       { name: "author", content: "Waythrough" },
       { property: "og:title", content: "Waythrough" },
