@@ -186,6 +186,7 @@ type UserProjectRow = {
   beneficiaries: string | null;
   needs: Record<string, unknown> | null;
   partner_org_refs: string[] | null;
+  seed_project_ref: string | null;
 };
 
 function Overview({ userId, role }: { userId: string; role: string | null }) {
@@ -219,7 +220,7 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
       const { data: upRows } = await supabase
         .from("user_projects")
         .select(
-          "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs",
+          "id, org_id, title, category, project_type, status, target_date, location_label, lat, lng, description, beneficiaries, needs, partner_org_refs, seed_project_ref",
         )
         .eq("owner_id", userId)
         .order("created_at", { ascending: false });
@@ -250,6 +251,11 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
     return userProjects.map((p) => userRowToProject(p, org?.id ?? "user-org"));
   }, [userProjects, org]);
 
+  const importedSeedIds = useMemo(
+    () => new Set(userProjects.map((p) => p.seed_project_ref).filter(Boolean) as string[]),
+    [userProjects],
+  );
+
   const initiatives = useMemo<Project[]>(() => {
     if (role === "donor") {
       if (!donor) return [];
@@ -259,13 +265,14 @@ function Overview({ userId, role }: { userId: string; role: string | null }) {
     const seedMine = org?.claimed_seed_org_id
       ? seedProjects.filter(
           (p) =>
-            p.orgId === org.claimed_seed_org_id ||
-            (role === "ngo" &&
-              (p.partnerOrgIds ?? []).includes(org.claimed_seed_org_id!)),
+            (p.orgId === org.claimed_seed_org_id ||
+              (role === "ngo" &&
+                (p.partnerOrgIds ?? []).includes(org.claimed_seed_org_id!))) &&
+            !importedSeedIds.has(p.id),
         )
       : [];
     return [...userProjectAsProject, ...seedMine];
-  }, [role, org, donor, userProjectAsProject]);
+  }, [role, org, donor, userProjectAsProject, importedSeedIds]);
 
   const editableIds = useMemo(
     () => new Set(userProjects.map((p) => p.id)),
