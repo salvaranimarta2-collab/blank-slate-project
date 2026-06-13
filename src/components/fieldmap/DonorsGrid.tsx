@@ -64,7 +64,7 @@ export function DonorsGrid() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return donors.filter((d) => {
+    return shuffledDonors.filter((d) => {
       if (type !== "all" && d.type !== type) return false;
       if (interests.length && !interests.some((i) => d.interests.includes(i)))
         return false;
