@@ -202,15 +202,15 @@ export const donors: Donor[] = [
   },
   {
     id: "d-hpatel",
-    name: "Banyan Family Office",
+    name: "Banyan Philanthropic Fund",
     type: "Individual",
     location: "London, UK",
     about:
-      "Fictional private family office focused on localised water access, community energy resilience, and nutrition initiatives for displaced families.",
+      "Fictional private philanthropic fund focused on localised water access, community energy resilience, and nutrition initiatives for displaced communities.",
     interests: ["water/WASH", "energy", "food security"],
     regions: ["East Africa", "South Asia"],
     ticketSize: "$25k – $200k",
-    contact: "grants@banyanfamily.example",
+    contact: "grants@banyanfund.example",
     recentlyFunded: 4,
   },
   {
