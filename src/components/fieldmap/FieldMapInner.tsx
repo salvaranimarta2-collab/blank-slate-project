@@ -186,7 +186,8 @@ export function FieldMapInner({
   anonymous?: AnonymousSms[];
 }) {
   const center = useMemo<[number, number]>(() => [10, 25], []);
-
+  const [anonFocusedId, setAnonFocusedId] = useState<string | null>(null);
+  const anonFocused = anonymous.find((s) => s.id === anonFocusedId) ?? null;
 
   return (
     <MapContainer
@@ -199,14 +200,27 @@ export function FieldMapInner({
       scrollWheelZoom
     >
       <MapPanes />
-      <TileLayer
-        attribution='&copy; OpenStreetMap &copy; CARTO'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
-      />
-      <TileLayer
-        pane="labels"
-        url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-      />
+      {anonFocused ? (
+        <TileLayer
+          key="abstract"
+          url={ABSTRACT_TILE_URL}
+          noWrap
+          attribution="Location obfuscated"
+        />
+      ) : (
+        <>
+          <TileLayer
+            key="real"
+            attribution='&copy; OpenStreetMap &copy; CARTO'
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
+          />
+          <TileLayer
+            pane="labels"
+            url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+          />
+        </>
+      )}
+
       <MarkerClusterGroup
         chunkedLoading
         iconCreateFunction={clusterIcon}
