@@ -118,4 +118,54 @@ export async function loadUserProjectsForMap() {
       };
     });
   registerExtraProjects(mappedProjects);
+
+  // Unclaimed SMS submissions: place at a random location each refresh so they
+  // show up on the map for demo purposes. Each gets a synthetic org.
+  const smsList = (smsRows as Array<{
+    id: string;
+    title: string;
+    category: string;
+    project_type: string | null;
+    location_label: string | null;
+    description: string | null;
+    beneficiaries: string | null;
+    needs: Record<string, unknown> | null;
+    contact_phone: string | null;
+  }> | null) ?? [];
+
+  const smsOrgs: Organization[] = [];
+  const smsProjects: Project[] = [];
+  for (const s of smsList) {
+    const { lat, lng } = randomDemoLocation();
+    const orgId = `sms-org-${s.id}`;
+    smsOrgs.push({
+      id: orgId,
+      name: "SMS submission",
+      country: "",
+      region: s.location_label ?? "",
+      lat,
+      lng,
+      phone: s.contact_phone ?? "",
+      description: undefined,
+      orgType: "refugee-led",
+      brings: [],
+      entityKind: "RLO",
+    });
+    smsProjects.push({
+      id: `sms-${s.id}`,
+      orgId,
+      title: s.title,
+      category: s.category as Category,
+      type: (s.project_type as ProjectType) ?? "ongoing",
+      locationLabel: s.location_label ?? "",
+      lat,
+      lng,
+      description: s.description ?? "",
+      beneficiaries: (s.beneficiaries as BeneficiaryRange) ?? "under 100",
+      needs: (s.needs as Project["needs"]) ?? {},
+      status: "seeking support",
+    });
+  }
+  if (smsOrgs.length) registerExtraOrgs(smsOrgs);
+  if (smsProjects.length) registerExtraProjects(smsProjects);
 }
