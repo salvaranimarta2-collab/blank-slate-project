@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import {
+  Circle,
   MapContainer,
   Marker,
   Polyline,
@@ -14,6 +15,8 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import type { Project, EntityKind } from "@/lib/fieldmap-data";
 import { orgById, orgKind } from "@/lib/fieldmap-data";
+import type { AnonymousSms } from "@/lib/load-anonymous-sms";
+
 
 const PIN_COLORS: Record<EntityKind, string> = {
   RLO: "hsl(152 65% 36%)",
