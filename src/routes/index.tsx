@@ -165,7 +165,9 @@ function HomePage() {
               projects={visible}
               onSelect={openProject}
               focused={projectOpen && selected ? { project: selected, perspectiveOrgId } : null}
+              anonymous={anonymous}
             />
+
             <ProjectCard
               project={selected}
               perspectiveOrgId={perspectiveOrgId}
