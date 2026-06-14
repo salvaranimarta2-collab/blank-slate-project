@@ -20,6 +20,8 @@ import {
 } from "@/lib/fieldmap-data";
 import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import { loadAnonymousSms, type AnonymousSms } from "@/lib/load-anonymous-sms";
+import { SmsViewDialog } from "@/components/fieldmap/SmsViewDialog";
+
 
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
