@@ -566,7 +566,7 @@ export const projects: Project[] = [
     lat: 39.1167,
     lng: 26.5333,
     description:
-      "The very first EfR project. A team of master's students from different faculties and nationalities designed and installed a 5 kWp solar PV system in a classroom at the Kara Tepe camp in summer 2018, powering structured lessons for children awaiting asylum decisions.",
+      "The very first EfR project. A team of master's students from different faculties and nationalities is designing and installing a 5 kWp solar PV system in a classroom at the Kara Tepe camp, powering structured lessons for children awaiting asylum decisions.",
     beneficiaries: "100–500",
     needs: {
       funding: { amount: 9000, currency: "EUR", raised: 9000 },
