@@ -48,34 +48,36 @@ const SEED_DONOR_ID = "d-ikea";
 // Mock initiatives for the ExampleName demo RLO (own "my initiatives").
 const EXAMPLE_PROJECTS = [
   {
-    title: "Community Sewing Cooperative",
-    category: "livelihoods" as const,
-    project_type: "ongoing" as const,
-    location_label: "ExampleTown, ExampleCountry",
-    description:
-      "A women-led cooperative producing school uniforms and tote bags for local markets. We need two industrial sewing machines and a small bulk fabric order to take on a confirmed school contract.",
-    beneficiaries: "under 100",
-    needs: {
-      funding: { amount: 1800, currency: "EUR" },
-      equipment: "Two industrial sewing machines and a starter fabric order",
-    } as Record<string, unknown>,
-    status: "seeking support",
-  },
-  {
-    title: "Mother-Tongue Storybook Library",
+    title: "Weekend Maths Catch-Up Club",
     category: "education" as const,
     project_type: "ongoing" as const,
     location_label: "ExampleTown, ExampleCountry",
     description:
-      "Building a small lending library of children's books in our community's mother tongue. Looking for printing partners and a volunteer to digitise donated manuscripts.",
+      "Small-group maths tutoring on Saturdays for displaced children who have missed one or more school years. We need workbooks, basic stationery, and a volunteer coordinator to grow from 2 to 4 weekly groups.",
+    beneficiaries: "under 100",
+    needs: {
+      funding: { amount: 1200, currency: "EUR" },
+      equipment: "Workbooks, exercise books, pens, and a portable whiteboard",
+      expertise: ["education"],
+    } as Record<string, unknown>,
+    status: "seeking support",
+  },
+  {
+    title: "Host-Language Literacy Tutoring",
+    category: "education" as const,
+    project_type: "ongoing" as const,
+    location_label: "ExampleTown, ExampleCountry",
+    description:
+      "After-school reading and writing tutoring in the host country language for newly arrived displaced children aged 7–14. Looking for trained language tutors and printed leveled readers to support 60+ learners.",
     beneficiaries: "100–500",
     needs: {
-      funding: { amount: 600, currency: "EUR" },
-      expertise: ["IT"],
+      funding: { amount: 900, currency: "EUR" },
+      expertise: ["education", "translation"],
     } as Record<string, unknown>,
     status: "seeking support",
   },
 ] as const;
+
 
 // Exact text of the unclaimed SMS submission for the ExampleName demo.
 const EXAMPLE_SMS = {
