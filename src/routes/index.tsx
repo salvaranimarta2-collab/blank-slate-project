@@ -19,6 +19,8 @@ import {
   subscribeExtras,
 } from "@/lib/fieldmap-data";
 import { loadUserProjectsForMap } from "@/lib/load-user-projects";
+import { loadAnonymousSms, type AnonymousSms } from "@/lib/load-anonymous-sms";
+
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
@@ -59,12 +61,15 @@ function HomePage() {
   const [orgOpen, setOrgOpen] = useState(false);
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
   const [, setTick] = useState(0);
+  const [anonymous, setAnonymous] = useState<AnonymousSms[]>([]);
 
   useEffect(() => {
     loadUserProjectsForMap();
+    loadAnonymousSms().then(setAnonymous);
     const unsub = subscribeExtras(() => setTick((t) => t + 1));
     return () => { unsub(); };
   }, []);
+
 
   const visible = useMemo(() => {
     return getAllProjects().filter((p: Project) => {
@@ -160,7 +165,9 @@ function HomePage() {
               projects={visible}
               onSelect={openProject}
               focused={projectOpen && selected ? { project: selected, perspectiveOrgId } : null}
+              anonymous={anonymous}
             />
+
             <ProjectCard
               project={selected}
               perspectiveOrgId={perspectiveOrgId}

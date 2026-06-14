@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import {
+  Circle,
   MapContainer,
   Marker,
   Polyline,
@@ -14,6 +15,8 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import type { Project, EntityKind } from "@/lib/fieldmap-data";
 import { orgById, orgKind } from "@/lib/fieldmap-data";
+import type { AnonymousSms } from "@/lib/load-anonymous-sms";
+
 
 const PIN_COLORS: Record<EntityKind, string> = {
   RLO: "hsl(152 65% 36%)",
@@ -133,12 +136,15 @@ export function FieldMapInner({
   projects,
   onSelect,
   focused,
+  anonymous = [],
 }: {
   projects: Project[];
   onSelect: (p: Project, perspectiveOrgId?: string) => void;
   focused: { project: Project; perspectiveOrgId?: string | null } | null;
+  anonymous?: AnonymousSms[];
 }) {
   const center = useMemo<[number, number]>(() => [10, 25], []);
+
 
   return (
     <MapContainer
@@ -253,7 +259,46 @@ export function FieldMapInner({
           );
         });
       })}
+      {anonymous.map((s) => (
+        <Circle
+          key={`anon-${s.id}`}
+          center={[s.lat, s.lng]}
+          radius={s.radiusMeters}
+          pathOptions={{
+            color: "hsl(35 90% 45%)",
+            weight: 2,
+            opacity: 0.9,
+            fillColor: "hsl(35 90% 55%)",
+            fillOpacity: 0.18,
+            dashArray: "6 6",
+          }}
+        >
+          <Popup>
+            <div style={{ fontSize: 12, maxWidth: 240 }}>
+              <strong>{s.title}</strong>
+              <div style={{ color: "#666", fontSize: 11, marginTop: 2 }}>
+                Anonymous SMS submission · {s.category}
+              </div>
+              <div
+                style={{
+                  marginTop: 6,
+                  padding: "4px 6px",
+                  background: "hsl(35 90% 95%)",
+                  border: "1px solid hsl(35 90% 75%)",
+                  borderRadius: 4,
+                  fontSize: 11,
+                  color: "hsl(25 70% 30%)",
+                }}
+              >
+                Location withheld for safety. This circle is a randomised
+                placeholder — it does not represent the real area.
+              </div>
+            </div>
+          </Popup>
+        </Circle>
+      ))}
       <FlyTo focused={focused} />
+
     </MapContainer>
   );
 }
