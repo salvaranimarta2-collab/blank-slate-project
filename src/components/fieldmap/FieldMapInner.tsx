@@ -136,12 +136,15 @@ export function FieldMapInner({
   projects,
   onSelect,
   focused,
+  anonymous = [],
 }: {
   projects: Project[];
   onSelect: (p: Project, perspectiveOrgId?: string) => void;
   focused: { project: Project; perspectiveOrgId?: string | null } | null;
+  anonymous?: AnonymousSms[];
 }) {
   const center = useMemo<[number, number]>(() => [10, 25], []);
+
 
   return (
     <MapContainer
