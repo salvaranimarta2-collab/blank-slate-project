@@ -38,11 +38,11 @@ type DbProject = {
   partner_org_refs: string[] | null;
 };
 
-// Pick a random land-ish point on each load (demo only).
+// Pick a random land-ish point in Australia on each load (demo only).
 function randomDemoLocation(): { lat: number; lng: number } {
-  // Roughly bias toward populated latitudes; lng is fully random.
-  const lat = Math.random() * 95 - 40; // -40..55
-  const lng = Math.random() * 360 - 180; // -180..180
+  // Australia bounding box: lat ~-43..-10, lng ~113..154
+  const lat = Math.random() * 33 - 43; // -43..-10
+  const lng = Math.random() * 41 + 113; // 113..154
   return { lat, lng };
 }
 
