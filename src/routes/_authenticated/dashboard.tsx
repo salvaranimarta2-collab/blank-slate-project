@@ -1176,8 +1176,8 @@ const DONOR_DEMOS: DemoThread[] = [
 const ORG_DEMOS: DemoThread[] = [
   {
     id: "demo-o-1",
-    name: "Mosaic Foundation (Donor)",
-    subtitle: "Family foundation — $50k–$250k grants",
+    name: "Helios Energy (Donor)",
+    subtitle: "Corporate foundation — $50k–$250k grants",
     project_ref: "Inquiry: clean water programme",
     messages: [
       { id: "m1", from: "them", minutesAgo: 60 * 20, body: "Hi — your borehole programme caught our eye. Could you share your latest annual report and a 1-pager on the next phase?" },

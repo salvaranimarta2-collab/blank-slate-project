@@ -20,11 +20,11 @@ export type Donor = {
 export const donors: Donor[] = [
   {
     id: "d-ikea",
-    name: "Northwind Family Foundation",
+    name: "Northwind Foundation",
     type: "Foundation",
     location: "Stockholm, Sweden",
     about:
-      "Fictional Nordic family foundation backing renewable energy access and livelihoods for displaced communities. Multi-year, trust-based partnerships preferred.",
+      "Fictional Nordic foundation backing renewable energy access and livelihoods for displaced communities. Multi-year, trust-based partnerships preferred.",
     interests: ["energy", "livelihoods", "shelter"],
     regions: ["East Africa", "Middle East", "South Asia"],
     ticketSize: "$250k – $5M",
@@ -202,15 +202,15 @@ export const donors: Donor[] = [
   },
   {
     id: "d-hpatel",
-    name: "Banyan Family Office",
+    name: "Banyan Philanthropic Fund",
     type: "Individual",
     location: "London, UK",
     about:
-      "Fictional private family office focused on localised water access, community energy resilience, and nutrition initiatives for displaced families.",
+      "Fictional private philanthropic fund focused on localised water access, community energy resilience, and nutrition initiatives for displaced communities.",
     interests: ["water/WASH", "energy", "food security"],
     regions: ["East Africa", "South Asia"],
     ticketSize: "$25k – $200k",
-    contact: "grants@banyanfamily.example",
+    contact: "grants@banyanfund.example",
     recentlyFunded: 4,
   },
   {
