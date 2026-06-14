@@ -58,7 +58,7 @@ function HomePage() {
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgOpen, setOrgOpen] = useState(false);
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
-  const [, setTick] = useState(0);
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     loadUserProjectsForMap();
@@ -108,7 +108,8 @@ function HomePage() {
       }
       return true;
     });
-  }, [filters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, tick]);
 
   function openProject(p: Project, perspective?: string) {
     setSelected(p);
