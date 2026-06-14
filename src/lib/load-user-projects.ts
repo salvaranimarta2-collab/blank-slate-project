@@ -46,6 +46,17 @@ function randomDemoLocation(): { lat: number; lng: number } {
   return { lat, lng };
 }
 
+// Pull just the "Problem:" portion out of an SMS-style submission body so it
+// fits the structured "problem" field on the project card. Solution / partner /
+// funding details are represented via the needs object + Funding section.
+function extractProblem(raw: string): string {
+  if (!raw) return "";
+  const stripped = raw.replace(/^\s*Problem:\s*/i, "");
+  const cutMatch = stripped.match(/\b(Solution|Partner needed|Funding):/i);
+  const problem = cutMatch ? stripped.slice(0, cutMatch.index).trim() : stripped.trim();
+  return problem;
+}
+
 export async function loadUserProjectsForMap() {
   const [{ data: orgs }, { data: projs }, { data: smsRows }] = await Promise.all([
     supabase
@@ -160,7 +171,7 @@ export async function loadUserProjectsForMap() {
       locationLabel: s.location_label ?? "",
       lat,
       lng,
-      description: s.description ?? "",
+      description: extractProblem(s.description ?? ""),
       beneficiaries: (s.beneficiaries as BeneficiaryRange) ?? "under 100",
       needs: (s.needs as Project["needs"]) ?? {},
       status: "seeking support",
