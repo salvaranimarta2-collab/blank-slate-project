@@ -1093,36 +1093,110 @@ function SmsClaimCard({
     onClaimed();
   }
 
+  const photo = categoryPhotos[sms.category as Category];
+  const funding = (sms.needs as { funding?: { currency?: string; amount?: number; raised?: number } })?.funding;
+  const needs = sms.needs as {
+    expertise?: string[];
+    equipment?: string;
+    training?: string;
+    partnership?: boolean;
+  };
+  const fundingPct = funding?.amount
+    ? Math.min(100, Math.round(((funding.raised ?? 0) / funding.amount) * 100))
+    : 0;
+
   return (
     <li>
-      <Card className="space-y-2 p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="text-sm font-medium">{sms.title}</p>
-            <p className="text-xs text-muted-foreground">
-              {sms.location_label}
-            </p>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            <Badge variant="outline" className="text-[10px] uppercase">
-              SMS
+      <Card className="overflow-hidden p-0">
+        {photo && (
+          <div className="relative h-32 w-full bg-muted">
+            <img
+              src={photo}
+              alt={`${sms.category} initiative`}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent" />
+            <Badge variant="secondary" className="absolute left-2 top-2 capitalize">
+              {sms.category}
             </Badge>
-            {suggested && (
-              <Badge className="text-[10px] uppercase">Matches your org</Badge>
+            <div className="absolute right-2 top-2 flex flex-col items-end gap-1">
+              <Badge variant="outline" className="bg-background/90 text-[10px] uppercase">
+                SMS
+              </Badge>
+              {suggested && (
+                <Badge className="text-[10px] uppercase">Matches your org</Badge>
+              )}
+            </div>
+            <div className="absolute inset-x-3 bottom-2">
+              <p className="line-clamp-2 text-sm font-semibold leading-snug text-white">
+                {sms.title}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-3 p-3">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <MapPin className="h-3 w-3" />
+            <span className="truncate">{sms.location_label}</span>
+          </div>
+
+          {sms.description && (
+            <p className="line-clamp-3 text-xs text-muted-foreground">
+              {sms.description}
+            </p>
+          )}
+
+          {funding?.amount ? (
+            <div className="space-y-1 rounded-md border border-[hsl(152_65%_36%)]/30 bg-[hsl(152_65%_36%)]/5 p-2">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-semibold uppercase tracking-wide text-muted-foreground">
+                  Funding
+                </span>
+                <span className="font-medium">{fundingPct}% raised</span>
+              </div>
+              <Progress
+                value={fundingPct}
+                className="h-1.5 [&>div]:bg-[hsl(152_65%_36%)]"
+              />
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                <span>
+                  {funding.currency} {(funding.raised ?? 0).toLocaleString()} raised
+                </span>
+                <span>
+                  of {funding.currency} {funding.amount.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="flex flex-wrap gap-1">
+            {needs?.expertise?.map((e) => (
+              <Badge key={e} variant="secondary" className="capitalize text-[10px]">
+                {e}
+              </Badge>
+            ))}
+            {needs?.equipment && (
+              <Badge variant="secondary" className="text-[10px]">Equipment</Badge>
+            )}
+            {needs?.training && (
+              <Badge variant="secondary" className="text-[10px]">Training</Badge>
+            )}
+            {needs?.partnership && (
+              <Badge variant="secondary" className="text-[10px]">Partnership</Badge>
             )}
           </div>
-        </div>
-        {sms.description && (
-          <p className="text-xs text-muted-foreground">{sms.description}</p>
-        )}
-        <div className="flex items-center justify-between gap-2 pt-1">
-          <span className="text-[11px] text-muted-foreground">
-            {sms.category} · {sms.project_type}
-            {sms.beneficiaries ? ` · ${sms.beneficiaries}` : ""}
-          </span>
-          <Button size="sm" onClick={claim} disabled={busy}>
-            {busy ? "…" : "Claim"}
-          </Button>
+
+          <div className="flex items-center justify-between gap-2 border-t pt-2">
+            <span className="text-[11px] capitalize text-muted-foreground">
+              {sms.project_type}
+              {sms.beneficiaries ? ` · ${sms.beneficiaries}` : ""}
+            </span>
+            <Button size="sm" onClick={claim} disabled={busy}>
+              {busy ? "…" : "Claim"}
+            </Button>
+          </div>
         </div>
       </Card>
     </li>
