@@ -70,8 +70,9 @@ export async function loadUserProjectsForMap() {
     }));
   registerExtraOrgs(mappedOrgs);
 
+  const mappedOrgIds = new Set(mappedOrgs.map((o) => o.id));
   const mappedProjects: Project[] = projList
-    .filter((p) => p.org_id)
+    .filter((p) => p.org_id && mappedOrgIds.has(p.org_id))
     .map((p) => {
       // partner_org_refs may contain "project:<id>" entries — convert to the
       // owner orgs of those projects so the existing map rendering works.
