@@ -151,7 +151,7 @@ export async function loadUserProjectsForMap() {
     const orgId = `sms-org-${s.id}`;
     smsOrgs.push({
       id: orgId,
-      name: "SMS submission",
+      name: "ExampleName submission",
       country: "",
       region: s.location_label ?? "",
       lat,
