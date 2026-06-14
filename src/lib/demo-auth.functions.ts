@@ -71,7 +71,7 @@ const EXAMPLE_PROJECTS = [
       "Children in our tutoring sessions have no access to devices at home, making it impossible to complete digital homework or access online learning resources outside of sessions.\n\nSolution: Build a small lending library of 15 tablets that children can borrow for a week at a time, with a simple sign-out system managed by community volunteers.",
     beneficiaries: "under 100",
     needs: {
-      funding: { amount: 1500, currency: "EUR", raised: 200 },
+      funding: { amount: 1500, currency: "EUR", raised: 1000 },
       equipment: "Tablets, protective cases, and a charging station",
       partnership: true,
     } as Record<string, unknown>,
