@@ -178,7 +178,7 @@ export const ensureDemoAccount = createServerFn({ method: "POST" })
             region: "ExampleTown",
             // lat/lng intentionally null so the org/projects don't appear on the map
             description:
-              "RLO — displaced parents and young adults living in ExampleTown since YearNumber.",
+              "A refugee-led organisation of displaced parents and young adults, running educational support for displaced children and adults in their local community.",
           })
           .select("id")
           .single();
