@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { organizations, projects } from "./fieldmap-data";
 import { donors } from "./donors-data";
 
-export type DemoRole = "rlo" | "ngo" | "donor";
+export type DemoRole = "rlo" | "rlo2" | "ngo" | "donor";
 
 export const DEMO_ACCOUNTS: Record<
   DemoRole,
@@ -19,6 +19,12 @@ export const DEMO_ACCOUNTS: Record<
     label: "Demo RLO",
     sublabel: "Ki4Bli — Kakuma, Kenya",
   },
+  rlo2: {
+    email: "demo-example@fieldmap.demo",
+    password: "DemoExample!2026",
+    label: "Demo RLO — ExampleName",
+    sublabel: "ExampleName — ExampleTown, ExampleCountry",
+  },
   ngo: {
     email: "demo-ngo@fieldmap.demo",
     password: "DemoNgo!2026",
@@ -33,15 +39,57 @@ export const DEMO_ACCOUNTS: Record<
   },
 };
 
-const SEED_ORG: Record<Exclude<DemoRole, "donor">, string> = {
+const SEED_ORG: Record<Exclude<DemoRole, "donor" | "rlo2">, string> = {
   rlo: "org-ki4bli",
   ngo: "org-efr",
 };
 const SEED_DONOR_ID = "d-ikea";
 
+// Mock initiatives for the ExampleName demo RLO (own "my initiatives").
+const EXAMPLE_PROJECTS = [
+  {
+    title: "Community Sewing Cooperative",
+    category: "Livelihoods" as const,
+    project_type: "ongoing" as const,
+    location_label: "ExampleTown, ExampleCountry",
+    description:
+      "A women-led cooperative producing school uniforms and tote bags for local markets. We need two industrial sewing machines and a small bulk fabric order to take on a confirmed school contract.",
+    beneficiaries: "20-50",
+    needs: { funding: 1800, equipment: true } as Record<string, unknown>,
+    status: "seeking support",
+  },
+  {
+    title: "Mother-Tongue Storybook Library",
+    category: "Education" as const,
+    project_type: "ongoing" as const,
+    location_label: "ExampleTown, ExampleCountry",
+    description:
+      "Building a small lending library of children's books in our community's mother tongue. Looking for printing partners and a volunteer to digitise donated manuscripts.",
+    beneficiaries: "100-250",
+    needs: { funding: 600, volunteers: true } as Record<string, unknown>,
+    status: "seeking support",
+  },
+] as const;
+
+// Exact text of the unclaimed SMS submission for the ExampleName demo.
+const EXAMPLE_SMS = {
+  title: "Solar Power for Evening Tutoring Sessions",
+  category: "Energy",
+  project_type: "ongoing" as const,
+  location_label: "ExampleTown, ExampleCountry",
+  description:
+    "Problem: Their tutoring space has unreliable electricity connection. Sessions are limited to daylight hours, which excludes most children who are only free in the evenings. Generator fuel costs are too high to sustain.\n\nSolution: Install a basic solar panel and battery system to power lighting and device charging points for children's tablets.\n\nPartner needed: Organisation experienced in small-scale solar — system sizing, local component sourcing, and on-site installation.\n\nFunding: €500 raised of €2,800 goal (covering panels, battery, wiring, and installation).",
+  beneficiaries: "50-100",
+  contact_phone: "SMS",
+  needs: { funding: 2300, partner: true } as Record<string, unknown>,
+};
+
 export const ensureDemoAccount = createServerFn({ method: "POST" })
   .inputValidator((d: { role: DemoRole }) => {
-    if (!d || (d.role !== "rlo" && d.role !== "ngo" && d.role !== "donor")) {
+    if (
+      !d ||
+      (d.role !== "rlo" && d.role !== "rlo2" && d.role !== "ngo" && d.role !== "donor")
+    ) {
       throw new Error("Invalid demo role");
     }
     return d;
@@ -57,11 +105,12 @@ export const ensureDemoAccount = createServerFn({ method: "POST" })
     if (existing) {
       userId = existing.id;
     } else {
+      const appRole = data.role === "rlo2" ? "rlo" : data.role;
       const created = await supabaseAdmin.auth.admin.createUser({
         email: cfg.email,
         password: cfg.password,
         email_confirm: true,
-        user_metadata: { display_name: cfg.label, role: data.role },
+        user_metadata: { display_name: cfg.label, role: appRole },
       });
       if (created.error || !created.data.user) {
         throw new Error(created.error?.message ?? "Failed to create demo user");
@@ -71,9 +120,10 @@ export const ensureDemoAccount = createServerFn({ method: "POST" })
 
     // Ensure role row exists (the new-user trigger handles this on signup; for
     // pre-existing users we make it idempotent).
+    const dbRole = data.role === "rlo2" ? "rlo" : data.role;
     await supabaseAdmin
       .from("user_roles")
-      .upsert({ user_id: userId, role: data.role }, { onConflict: "user_id,role" });
+      .upsert({ user_id: userId, role: dbRole }, { onConflict: "user_id,role" });
 
     // 2) Seed linked app data
     if (data.role === "donor") {
@@ -92,6 +142,83 @@ export const ensureDemoAccount = createServerFn({ method: "POST" })
           },
           { onConflict: "id" },
         );
+      }
+    } else if (data.role === "rlo2") {
+      // ExampleName demo — no seed org, off-map initiatives.
+      const { data: existingOrg } = await supabaseAdmin
+        .from("user_orgs")
+        .select("id")
+        .eq("owner_id", userId)
+        .maybeSingle();
+
+      let orgId = existingOrg?.id as string | undefined;
+      if (!orgId) {
+        const inserted = await supabaseAdmin
+          .from("user_orgs")
+          .insert({
+            owner_id: userId,
+            name: "ExampleName",
+            entity_kind: "RLO",
+            org_type: "refugee-led",
+            country: "ExampleCountry",
+            region: "ExampleTown",
+            // lat/lng intentionally null so the org/projects don't appear on the map
+            description:
+              "RLO — displaced parents and young adults living in ExampleTown since YearNumber.",
+          })
+          .select("id")
+          .single();
+        if (inserted.error || !inserted.data) {
+          throw new Error(inserted.error?.message ?? "Failed to seed ExampleName org");
+        }
+        orgId = inserted.data.id;
+      }
+
+      const { count } = await supabaseAdmin
+        .from("user_projects")
+        .select("id", { head: true, count: "exact" })
+        .eq("owner_id", userId);
+      if ((count ?? 0) === 0) {
+        await supabaseAdmin.from("user_projects").insert(
+          EXAMPLE_PROJECTS.map((p) => ({
+            owner_id: userId,
+            org_id: orgId,
+            title: p.title,
+            category: p.category,
+            project_type: p.project_type,
+            location_label: p.location_label,
+            // Off-map placeholder coordinates; filtered out of the map registry
+            // by load-user-projects when the owning org has no lat/lng.
+            lat: 0,
+            lng: 0,
+            description: p.description,
+            beneficiaries: p.beneficiaries,
+            needs: p.needs as unknown as never,
+            status: p.status,
+          })),
+        );
+      }
+
+      // Seed the unclaimed SMS submission once (global, visible to any RLO).
+      const { data: existingSms } = await supabaseAdmin
+        .from("sms_submissions")
+        .select("id")
+        .eq("title", EXAMPLE_SMS.title)
+        .is("claimed_by_user_id", null)
+        .maybeSingle();
+      if (!existingSms) {
+        await supabaseAdmin.from("sms_submissions").insert({
+          title: EXAMPLE_SMS.title,
+          category: EXAMPLE_SMS.category,
+          project_type: EXAMPLE_SMS.project_type,
+          location_label: EXAMPLE_SMS.location_label,
+          lat: 0,
+          lng: 0,
+          description: EXAMPLE_SMS.description,
+          beneficiaries: EXAMPLE_SMS.beneficiaries,
+          contact_phone: EXAMPLE_SMS.contact_phone,
+          needs: EXAMPLE_SMS.needs as unknown as never,
+        });
       }
     } else {
       const seedId = SEED_ORG[data.role];
