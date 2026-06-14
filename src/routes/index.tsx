@@ -66,6 +66,25 @@ function HomePage() {
     return () => { unsub(); };
   }, []);
 
+  // Discreet demo helper: press Shift+L to fly to the first SMS submission
+  // on the map (its pin is placed at a random location on each refresh).
+  function locateSmsDemo() {
+    const smsProj = getAllProjects().find((p) => p.id.startsWith("sms-"));
+    if (smsProj) openProject(smsProj);
+  }
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.shiftKey && (e.key === "L" || e.key === "l")) {
+        const target = e.target as HTMLElement | null;
+        if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+        locateSmsDemo();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+
   const visible = useMemo(() => {
     return getAllProjects().filter((p: Project) => {
       if (filters.category !== "all" && p.category !== filters.category)
@@ -117,8 +136,15 @@ function HomePage() {
               Waythrough
             </h1>
             <p className="text-[11px] text-muted-foreground">
-              Connecting grassroot RLOs, NGOs and donors
+              Connecting grassroot RLOs, NGOs and donors<button
+                type="button"
+                onClick={locateSmsDemo}
+                aria-label="Locate demo submission"
+                title="Locate demo submission"
+                className="ml-0.5 cursor-default text-muted-foreground/40 hover:text-muted-foreground"
+              >.</button>
             </p>
+
           </div>
         </div>
         <div className="flex items-center gap-3">
