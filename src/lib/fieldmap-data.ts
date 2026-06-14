@@ -456,7 +456,7 @@ export const projects: Project[] = [
     lat: 39.6325,
     lng: 20.8852,
     description:
-      "Habibi.Works is a maker space at Katsikas refugee camp with woodworking, metal, sewing, garden, music and gym facilities. Between August and September 2022, EfR installed a 4.1 kWp solar PV system with battery storage, a charge controller and an inverter. The system cuts roughly €1,500 from Habibi.Works' annual energy costs, freeing donor funds for programming.",
+      "Habibi.Works is a maker space at Katsikas refugee camp with woodworking, metal, sewing, garden, music and gym facilities. EfR is installing a 4.1 kWp solar PV system with battery storage, a charge controller and an inverter. The system cuts roughly €1,500 from Habibi.Works' annual energy costs, freeing donor funds for programming.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 12000, currency: "EUR", raised: 12000 },
