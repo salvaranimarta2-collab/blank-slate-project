@@ -316,20 +316,14 @@ export function FieldMapInner({
         });
       })}
       {anonymous.map((s) => (
-        <Circle
+        <Marker
           key={`anon-${s.id}`}
-          center={[s.lat, s.lng]}
-          radius={s.radiusMeters}
-          pathOptions={{
-            color: "hsl(35 90% 45%)",
-            weight: 2,
-            opacity: 0.9,
-            fillColor: "hsl(35 90% 55%)",
-            fillOpacity: 0.18,
-            dashArray: "6 6",
-          }}
+          position={[s.lat, s.lng]}
+          icon={anonIcon}
+          keyboard={false}
+          eventHandlers={{ click: () => setAnonFocusedId(s.id) }}
         >
-          <Popup>
+          <Popup eventHandlers={{ remove: () => setAnonFocusedId((cur) => (cur === s.id ? null : cur)) }}>
             <div style={{ fontSize: 12, maxWidth: 240 }}>
               <strong>{s.title}</strong>
               <div style={{ color: "#666", fontSize: 11, marginTop: 2 }}>
@@ -346,14 +340,19 @@ export function FieldMapInner({
                   color: "hsl(25 70% 30%)",
                 }}
               >
-                Location withheld for safety. This circle is a randomised
-                placeholder — it does not represent the real area.
+                Location withheld for safety. The basemap shown here is an
+                abstract placeholder, not the real area.
               </div>
             </div>
           </Popup>
-        </Circle>
+        </Marker>
       ))}
       <FlyTo focused={focused} />
+      <FlyToLatLng
+        pos={anonFocused ? [anonFocused.lat, anonFocused.lng] : null}
+        zoom={7}
+      />
+
 
     </MapContainer>
   );
