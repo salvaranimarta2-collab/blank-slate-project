@@ -313,7 +313,7 @@ export function ProjectCard({
             <div className="flex flex-wrap gap-1.5">
               {project.needs.expertise?.map((e) => (
                 <Badge key={e} variant="secondary" className="capitalize">
-                  Expertise: {e}
+                  Expertise: {e === "engineering" ? "Solar Systems Engineering" : e}
                 </Badge>
               ))}
               {project.needs.equipment && (
