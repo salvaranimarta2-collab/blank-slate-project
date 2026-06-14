@@ -132,6 +132,48 @@ function offsetFor(seed: string, index: number): [number, number] {
   return [Math.sin(angle) * r, Math.cos(angle) * r];
 }
 
+// Abstract, repeating SVG tile used as the basemap when an anonymous SMS
+// submission is focused. It looks vaguely map-like but does not correspond
+// to any real geography — so the true location stays unidentifiable.
+const ABSTRACT_TILE_URL = `data:image/svg+xml;utf8,${encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'>
+    <rect width='256' height='256' fill='#e8e0d2'/>
+    <g fill='#cdbf9f' opacity='0.55'>
+      <circle cx='40' cy='60' r='32'/>
+      <circle cx='180' cy='40' r='22'/>
+      <circle cx='220' cy='200' r='38'/>
+      <circle cx='90' cy='190' r='26'/>
+      <circle cx='130' cy='120' r='18'/>
+    </g>
+    <g fill='none' stroke='#a8966a' stroke-width='1' opacity='0.4'>
+      <path d='M0 80 Q 64 60 128 90 T 256 80'/>
+      <path d='M0 170 Q 80 140 160 180 T 256 160'/>
+      <path d='M0 230 Q 90 210 170 240 T 256 220'/>
+    </g>
+  </svg>`,
+)}`;
+
+const anonIcon = L.divIcon({
+  className: "fieldmap-pin fieldmap-pin-anon",
+  html: `
+    <span style="position:relative;display:block;height:30px;width:30px;">
+      <span style="position:absolute;top:8px;left:8px;height:14px;width:14px;border-radius:9999px;background:hsl(35 90% 50%);box-shadow:0 0 0 2px #fff,0 1px 3px rgba(0,0,0,0.3);"></span>
+      <span style="position:absolute;top:6px;left:11px;font:700 11px system-ui;color:#fff;line-height:18px;">?</span>
+    </span>
+  `,
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
+
+function FlyToLatLng({ pos, zoom }: { pos: [number, number] | null; zoom: number }) {
+  const map = useMap();
+  useEffect(() => {
+    if (pos) map.flyTo(pos, zoom, { duration: 0.8 });
+  }, [pos, zoom, map]);
+  return null;
+}
+
+
 export function FieldMapInner({
   projects,
   onSelect,
