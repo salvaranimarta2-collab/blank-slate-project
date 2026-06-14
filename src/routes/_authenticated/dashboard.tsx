@@ -502,7 +502,7 @@ function OrgOverview({
         total += Math.round((f.amount * ((h % 70) + 5)) / 100);
       }
     });
-    if (total >= 1000) return `$${(total / 1000).toFixed(0)}k`;
+    if (total >= 1000) return `$${(total / 1000).toFixed(0)}K`;
     return `$${total}`;
   }, [initiatives]);
 
