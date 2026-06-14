@@ -20,6 +20,8 @@ import {
 } from "@/lib/fieldmap-data";
 import { loadUserProjectsForMap } from "@/lib/load-user-projects";
 import { loadAnonymousSms, type AnonymousSms } from "@/lib/load-anonymous-sms";
+import { SmsViewDialog } from "@/components/fieldmap/SmsViewDialog";
+
 
 import { Button } from "@/components/ui/button";
 import { Handshake } from "lucide-react";
@@ -62,6 +64,8 @@ function HomePage() {
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
   const [, setTick] = useState(0);
   const [anonymous, setAnonymous] = useState<AnonymousSms[]>([]);
+  const [anonSelected, setAnonSelected] = useState<AnonymousSms | null>(null);
+
 
   useEffect(() => {
     loadUserProjectsForMap();
@@ -166,7 +170,14 @@ function HomePage() {
               onSelect={openProject}
               focused={projectOpen && selected ? { project: selected, perspectiveOrgId } : null}
               anonymous={anonymous}
+              onAnonSelect={setAnonSelected}
             />
+            <SmsViewDialog
+              sms={anonSelected}
+              open={!!anonSelected}
+              onOpenChange={(o: boolean) => !o && setAnonSelected(null)}
+            />
+
 
             <ProjectCard
               project={selected}

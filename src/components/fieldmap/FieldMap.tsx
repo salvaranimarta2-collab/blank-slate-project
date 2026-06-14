@@ -11,7 +11,9 @@ export function FieldMap(props: {
   onSelect: (p: Project, perspectiveOrgId?: string) => void;
   focused: { project: Project; perspectiveOrgId?: string | null } | null;
   anonymous?: AnonymousSms[];
+  onAnonSelect?: (s: AnonymousSms) => void;
 }) {
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
