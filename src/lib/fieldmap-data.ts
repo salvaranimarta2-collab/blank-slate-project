@@ -412,7 +412,7 @@ export const projects: Project[] = [
     lat: 36.2025,
     lng: 36.1606,
     description:
-      "After the February 2023 earthquakes, Bohşin-Imam Hatip Middle School absorbed displaced students and saw enrolment grow from 800 to 1,500 children. Grid power is unreliable with frequent daytime outages. EfR's 2024 team installed 18 PV modules totalling 9.9 kWp, 10 kW of inverters and 10 kWh of battery storage, fully covering the building's energy demand and removing outage-driven disruption from lessons.",
+      "After the February 2023 earthquakes, Bohşin-Imam Hatip Middle School is absorbing displaced students, with enrolment growing from 800 to 1,500 children. Grid power is unreliable with frequent daytime outages. EfR's team is installing 18 PV modules totalling 9.9 kWp, 10 kW of inverters and 10 kWh of battery storage, fully covering the building's energy demand and removing outage-driven disruption from lessons.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 32000, currency: "EUR", raised: 32000 },
@@ -434,7 +434,7 @@ export const projects: Project[] = [
     lat: 34.4332,
     lng: 35.8442,
     description:
-      "Before the project, the school had only 1–2 hours of grid electricity per day and depended on an expensive, polluting diesel generator. In September 2023, the EfR team installed a 9.8 kWp solar PV system with 8.7 kWh of battery storage and 20 kW of inverter capacity, allowing children and staff at the Lebanese-Syrian community school to be powered by renewable energy 24/7.",
+      "Before the project, the school has only 1–2 hours of grid electricity per day and depends on an expensive, polluting diesel generator. The EfR team is installing a 9.8 kWp solar PV system with 8.7 kWh of battery storage and 20 kW of inverter capacity, allowing children and staff at the Lebanese-Syrian community school to be powered by renewable energy 24/7.",
     beneficiaries: "100–500",
     needs: {
       funding: { amount: 28000, currency: "EUR", raised: 28000 },
@@ -456,7 +456,7 @@ export const projects: Project[] = [
     lat: 39.6325,
     lng: 20.8852,
     description:
-      "Habibi.Works is a maker space at Katsikas refugee camp with woodworking, metal, sewing, garden, music and gym facilities. Between August and September 2022, EfR installed a 4.1 kWp solar PV system with battery storage, a charge controller and an inverter. The system cuts roughly €1,500 from Habibi.Works' annual energy costs, freeing donor funds for programming.",
+      "Habibi.Works is a maker space at Katsikas refugee camp with woodworking, metal, sewing, garden, music and gym facilities. EfR is installing a 4.1 kWp solar PV system with battery storage, a charge controller and an inverter. The system cuts roughly €1,500 from Habibi.Works' annual energy costs, freeing donor funds for programming.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 12000, currency: "EUR", raised: 12000 },
@@ -478,7 +478,7 @@ export const projects: Project[] = [
     lat: 20.6597,
     lng: -103.3496,
     description:
-      "During the COVID-19 pandemic, FM4 Paso Libre needed to redirect every available peso to food, medical supplies and direct support for migrants in transit. EfR financed and oversaw a 2.5 kWp solar PV system delivered and installed in collaboration with local installer Grupo Beet, removing the shelter's electricity bills and shifting operations to 100% renewable energy.",
+      "FM4 Paso Libre needs to redirect every available peso to food, medical supplies and direct support for migrants in transit. EfR is financing and overseeing a 2.5 kWp solar PV system delivered and installed in collaboration with local installer Grupo Beet, removing the shelter's electricity bills and shifting operations to 100% renewable energy.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 8000, currency: "USD", raised: 8000 },
@@ -522,7 +522,7 @@ export const projects: Project[] = [
     lat: 4.9589,
     lng: 8.3269,
     description:
-      "EfR worked with African Development Initiative to design modular solar PV lamps prioritising the women-and-children quarter of the camp, alongside a feasibility assessment for a solar water pump. Lead contamination ruled out pumping the local groundwater. Six months into delivery, COVID-19 reclassified Nigeria as a red-zone country, internal sponsors blocked travel, and the project was halted before installation.",
+      "EfR is working with African Development Initiative to design modular solar PV lamps prioritising the women-and-children quarter of the camp, alongside a feasibility assessment for a solar water pump. Lead contamination rules out pumping the local groundwater, so the team is focusing delivery on the lighting component.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 15000, currency: "USD", raised: 4500 },
@@ -544,7 +544,7 @@ export const projects: Project[] = [
     lat: 39.1067,
     lng: 26.5556,
     description:
-      "Designed, funded, procured and installed in partnership with EuroRelief, this 25 kWp system used 90 PV modules and 2 inverters to reduce the frequency and duration of black-outs in Europe's largest refugee camp, especially in winter when heating demand spikes. The system displaces roughly 9,000 litres of diesel per year — around €12,600 in fuel savings redirected to camp services and 24,000 kg of CO₂ avoided annually.",
+      "Designed, funded, procured and installed in partnership with EuroRelief, this 25 kWp system uses 90 PV modules and 2 inverters to reduce the frequency and duration of black-outs in Europe's largest refugee camp, especially in winter when heating demand spikes. The system displaces roughly 9,000 litres of diesel per year — around €12,600 in fuel savings redirected to camp services and 24,000 kg of CO₂ avoided annually.",
     beneficiaries: "2,000+",
     needs: {
       funding: { amount: 45000, currency: "EUR", raised: 45000 },
@@ -566,7 +566,7 @@ export const projects: Project[] = [
     lat: 39.1167,
     lng: 26.5333,
     description:
-      "The very first EfR project. A team of master's students from different faculties and nationalities designed and installed a 5 kWp solar PV system in a classroom at the Kara Tepe camp in summer 2018, powering structured lessons for children awaiting asylum decisions.",
+      "The very first EfR project. A team of master's students from different faculties and nationalities is designing and installing a 5 kWp solar PV system in a classroom at the Kara Tepe camp, powering structured lessons for children awaiting asylum decisions.",
     beneficiaries: "100–500",
     needs: {
       funding: { amount: 9000, currency: "EUR", raised: 9000 },
