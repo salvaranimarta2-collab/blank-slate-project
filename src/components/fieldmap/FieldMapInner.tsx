@@ -281,37 +281,11 @@ export function FieldMapInner({
           position={[s.lat, s.lng]}
           icon={anonIcon}
           keyboard={false}
-          eventHandlers={{ click: () => setAnonFocusedId(s.id) }}
-        >
-          <Popup eventHandlers={{ remove: () => setAnonFocusedId((cur) => (cur === s.id ? null : cur)) }}>
-            <div style={{ fontSize: 12, maxWidth: 240 }}>
-              <strong>{s.title}</strong>
-              <div style={{ color: "#666", fontSize: 11, marginTop: 2 }}>
-                Anonymous SMS submission · {s.category}
-              </div>
-              <div
-                style={{
-                  marginTop: 6,
-                  padding: "4px 6px",
-                  background: "hsl(35 90% 95%)",
-                  border: "1px solid hsl(35 90% 75%)",
-                  borderRadius: 4,
-                  fontSize: 11,
-                  color: "hsl(25 70% 30%)",
-                }}
-              >
-                Location withheld for safety. The basemap shown here is an
-                abstract placeholder, not the real area.
-              </div>
-            </div>
-          </Popup>
-        </Marker>
+          eventHandlers={{ click: () => onAnonSelect?.(s) }}
+        />
       ))}
       <FlyTo focused={focused} />
-      <FlyToLatLng
-        pos={anonFocused ? [anonFocused.lat, anonFocused.lng] : null}
-        zoom={7}
-      />
+
 
 
     </MapContainer>
