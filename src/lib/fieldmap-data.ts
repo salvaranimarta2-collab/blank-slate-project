@@ -544,7 +544,7 @@ export const projects: Project[] = [
     lat: 39.1067,
     lng: 26.5556,
     description:
-      "Designed, funded, procured and installed in partnership with EuroRelief, this 25 kWp system used 90 PV modules and 2 inverters to reduce the frequency and duration of black-outs in Europe's largest refugee camp, especially in winter when heating demand spikes. The system displaces roughly 9,000 litres of diesel per year — around €12,600 in fuel savings redirected to camp services and 24,000 kg of CO₂ avoided annually.",
+      "Designed, funded, procured and installed in partnership with EuroRelief, this 25 kWp system uses 90 PV modules and 2 inverters to reduce the frequency and duration of black-outs in Europe's largest refugee camp, especially in winter when heating demand spikes. The system displaces roughly 9,000 litres of diesel per year — around €12,600 in fuel savings redirected to camp services and 24,000 kg of CO₂ avoided annually.",
     beneficiaries: "2,000+",
     needs: {
       funding: { amount: 45000, currency: "EUR", raised: 45000 },
