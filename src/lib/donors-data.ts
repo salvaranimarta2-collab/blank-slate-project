@@ -20,11 +20,11 @@ export type Donor = {
 export const donors: Donor[] = [
   {
     id: "d-ikea",
-    name: "Northwind Family Foundation",
+    name: "Northwind Foundation",
     type: "Foundation",
     location: "Stockholm, Sweden",
     about:
-      "Fictional Nordic family foundation backing renewable energy access and livelihoods for displaced communities. Multi-year, trust-based partnerships preferred.",
+      "Fictional Nordic foundation backing renewable energy access and livelihoods for displaced communities. Multi-year, trust-based partnerships preferred.",
     interests: ["energy", "livelihoods", "shelter"],
     regions: ["East Africa", "Middle East", "South Asia"],
     ticketSize: "$250k – $5M",
