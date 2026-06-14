@@ -136,8 +136,15 @@ function HomePage() {
               Waythrough
             </h1>
             <p className="text-[11px] text-muted-foreground">
-              Connecting grassroot RLOs, NGOs and donors
+              Connecting grassroot RLOs, NGOs and donors<button
+                type="button"
+                onClick={locateSmsDemo}
+                aria-label="Locate demo submission"
+                title="Locate demo submission"
+                className="ml-0.5 cursor-default text-muted-foreground/40 hover:text-muted-foreground"
+              >.</button>
             </p>
+
           </div>
         </div>
         <div className="flex items-center gap-3">
