@@ -55,7 +55,10 @@ const EXAMPLE_PROJECTS = [
     description:
       "A women-led cooperative producing school uniforms and tote bags for local markets. We need two industrial sewing machines and a small bulk fabric order to take on a confirmed school contract.",
     beneficiaries: "under 100",
-    needs: { funding: 1800, equipment: true } as Record<string, unknown>,
+    needs: {
+      funding: { amount: 1800, currency: "EUR" },
+      equipment: "Two industrial sewing machines and a starter fabric order",
+    } as Record<string, unknown>,
     status: "seeking support",
   },
   {
@@ -66,7 +69,10 @@ const EXAMPLE_PROJECTS = [
     description:
       "Building a small lending library of children's books in our community's mother tongue. Looking for printing partners and a volunteer to digitise donated manuscripts.",
     beneficiaries: "100–500",
-    needs: { funding: 600, volunteers: true } as Record<string, unknown>,
+    needs: {
+      funding: { amount: 600, currency: "EUR" },
+      expertise: ["IT"],
+    } as Record<string, unknown>,
     status: "seeking support",
   },
 ] as const;
@@ -81,7 +87,11 @@ const EXAMPLE_SMS = {
     "Problem: Their tutoring space has unreliable electricity connection. Sessions are limited to daylight hours, which excludes most children who are only free in the evenings. Generator fuel costs are too high to sustain.\n\nSolution: Install a basic solar panel and battery system to power lighting and device charging points for children's tablets.\n\nPartner needed: Organisation experienced in small-scale solar — system sizing, local component sourcing, and on-site installation.\n\nFunding: €500 raised of €2,800 goal (covering panels, battery, wiring, and installation).",
   beneficiaries: "under 100",
   contact_phone: "SMS",
-  needs: { funding: 2300, partner: true } as Record<string, unknown>,
+  needs: {
+    funding: { amount: 2800, currency: "EUR", raised: 500 },
+    partnership: true,
+    expertise: ["engineering"],
+  } as Record<string, unknown>,
 };
 
 
