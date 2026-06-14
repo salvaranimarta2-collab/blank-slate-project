@@ -412,7 +412,7 @@ export const projects: Project[] = [
     lat: 36.2025,
     lng: 36.1606,
     description:
-      "After the February 2023 earthquakes, Bohşin-Imam Hatip Middle School absorbed displaced students and saw enrolment grow from 800 to 1,500 children. Grid power is unreliable with frequent daytime outages. EfR's 2024 team installed 18 PV modules totalling 9.9 kWp, 10 kW of inverters and 10 kWh of battery storage, fully covering the building's energy demand and removing outage-driven disruption from lessons.",
+      "After the February 2023 earthquakes, Bohşin-Imam Hatip Middle School is absorbing displaced students, with enrolment growing from 800 to 1,500 children. Grid power is unreliable with frequent daytime outages. EfR's team is installing 18 PV modules totalling 9.9 kWp, 10 kW of inverters and 10 kWh of battery storage, fully covering the building's energy demand and removing outage-driven disruption from lessons.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 32000, currency: "EUR", raised: 32000 },
