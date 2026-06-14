@@ -168,7 +168,14 @@ function HomePage() {
               onSelect={openProject}
               focused={projectOpen && selected ? { project: selected, perspectiveOrgId } : null}
               anonymous={anonymous}
+              onAnonSelect={setAnonSelected}
             />
+            <SmsViewDialog
+              sms={anonSelected}
+              open={!!anonSelected}
+              onOpenChange={(o) => !o && setAnonSelected(null)}
+            />
+
 
             <ProjectCard
               project={selected}
