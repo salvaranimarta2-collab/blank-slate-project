@@ -434,7 +434,7 @@ export const projects: Project[] = [
     lat: 34.4332,
     lng: 35.8442,
     description:
-      "Before the project, the school had only 1–2 hours of grid electricity per day and depended on an expensive, polluting diesel generator. In September 2023, the EfR team installed a 9.8 kWp solar PV system with 8.7 kWh of battery storage and 20 kW of inverter capacity, allowing children and staff at the Lebanese-Syrian community school to be powered by renewable energy 24/7.",
+      "Before the project, the school has only 1–2 hours of grid electricity per day and depends on an expensive, polluting diesel generator. The EfR team is installing a 9.8 kWp solar PV system with 8.7 kWh of battery storage and 20 kW of inverter capacity, allowing children and staff at the Lebanese-Syrian community school to be powered by renewable energy 24/7.",
     beneficiaries: "100–500",
     needs: {
       funding: { amount: 28000, currency: "EUR", raised: 28000 },
