@@ -5,8 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Heart, X } from "lucide-react";
 
 // Demo figures — purely illustrative of the site's running costs.
-const MONTHLY_GOAL = 850; // USD
-const RAISED = 412; // USD
+const MONTHLY_GOAL = 150; // USD
+const RAISED = 111; // USD
 
 export function MonthlyCostBanner() {
   const { pathname } = useLocation();
