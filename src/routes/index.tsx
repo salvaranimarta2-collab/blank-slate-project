@@ -175,7 +175,7 @@ function HomePage() {
             <SmsViewDialog
               sms={anonSelected}
               open={!!anonSelected}
-              onOpenChange={(o) => !o && setAnonSelected(null)}
+              onOpenChange={(o: boolean) => !o && setAnonSelected(null)}
             />
 
 
