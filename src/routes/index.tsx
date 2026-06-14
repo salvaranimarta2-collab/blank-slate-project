@@ -62,6 +62,8 @@ function HomePage() {
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
   const [, setTick] = useState(0);
   const [anonymous, setAnonymous] = useState<AnonymousSms[]>([]);
+  const [anonSelected, setAnonSelected] = useState<AnonymousSms | null>(null);
+
 
   useEffect(() => {
     loadUserProjectsForMap();
