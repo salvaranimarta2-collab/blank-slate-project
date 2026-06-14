@@ -49,23 +49,23 @@ const SEED_DONOR_ID = "d-ikea";
 const EXAMPLE_PROJECTS = [
   {
     title: "Community Sewing Cooperative",
-    category: "Livelihoods" as const,
+    category: "livelihoods" as const,
     project_type: "ongoing" as const,
     location_label: "ExampleTown, ExampleCountry",
     description:
       "A women-led cooperative producing school uniforms and tote bags for local markets. We need two industrial sewing machines and a small bulk fabric order to take on a confirmed school contract.",
-    beneficiaries: "20-50",
+    beneficiaries: "under 100",
     needs: { funding: 1800, equipment: true } as Record<string, unknown>,
     status: "seeking support",
   },
   {
     title: "Mother-Tongue Storybook Library",
-    category: "Education" as const,
+    category: "education" as const,
     project_type: "ongoing" as const,
     location_label: "ExampleTown, ExampleCountry",
     description:
       "Building a small lending library of children's books in our community's mother tongue. Looking for printing partners and a volunteer to digitise donated manuscripts.",
-    beneficiaries: "100-250",
+    beneficiaries: "100–500",
     needs: { funding: 600, volunteers: true } as Record<string, unknown>,
     status: "seeking support",
   },
@@ -74,15 +74,16 @@ const EXAMPLE_PROJECTS = [
 // Exact text of the unclaimed SMS submission for the ExampleName demo.
 const EXAMPLE_SMS = {
   title: "Solar Power for Evening Tutoring Sessions",
-  category: "Energy",
+  category: "energy",
   project_type: "ongoing" as const,
   location_label: "ExampleTown, ExampleCountry",
   description:
     "Problem: Their tutoring space has unreliable electricity connection. Sessions are limited to daylight hours, which excludes most children who are only free in the evenings. Generator fuel costs are too high to sustain.\n\nSolution: Install a basic solar panel and battery system to power lighting and device charging points for children's tablets.\n\nPartner needed: Organisation experienced in small-scale solar — system sizing, local component sourcing, and on-site installation.\n\nFunding: €500 raised of €2,800 goal (covering panels, battery, wiring, and installation).",
-  beneficiaries: "50-100",
+  beneficiaries: "under 100",
   contact_phone: "SMS",
   needs: { funding: 2300, partner: true } as Record<string, unknown>,
 };
+
 
 export const ensureDemoAccount = createServerFn({ method: "POST" })
   .inputValidator((d: { role: DemoRole }) => {
