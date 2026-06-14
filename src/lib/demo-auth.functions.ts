@@ -87,7 +87,7 @@ const EXAMPLE_SMS = {
   project_type: "ongoing" as const,
   location_label: "ExampleTown, ExampleCountry",
   description:
-    "Problem: Their tutoring space has unreliable electricity connection. Sessions are limited to daylight hours, which excludes most children who are only free in the evenings. Generator fuel costs are too high to sustain.\n\nSolution: Install a basic solar panel and battery system to power lighting and device charging points for children's tablets.\n\nPartner needed: Organisation experienced in small-scale solar — system sizing, local component sourcing, and on-site installation.\n\nFunding: €500 raised of €2,800 goal (covering panels, battery, wiring, and installation).",
+    "Problem: Our tutoring space has unreliable electricity connection. Sessions are limited to daylight hours, which excludes most children who are only free in the evenings. Generator fuel costs are too high to sustain. Solution: Install a basic solar panel and battery system to power lighting and device charging points for children's tablets. Partner needed: Organisation experienced in small-scale solar — system sizing, local component sourcing, and on-site installation. Funding: €500 raised of €2,800 goal (covering panels, battery, wiring, and installation).",
   beneficiaries: "under 100",
   contact_phone: "SMS",
   needs: {
