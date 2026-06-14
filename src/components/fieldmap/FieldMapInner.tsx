@@ -150,15 +150,15 @@ export function FieldMapInner({
   onSelect,
   focused,
   anonymous = [],
+  onAnonSelect,
 }: {
   projects: Project[];
   onSelect: (p: Project, perspectiveOrgId?: string) => void;
   focused: { project: Project; perspectiveOrgId?: string | null } | null;
   anonymous?: AnonymousSms[];
+  onAnonSelect?: (s: AnonymousSms) => void;
 }) {
   const center = useMemo<[number, number]>(() => [10, 25], []);
-  const [anonFocusedId, setAnonFocusedId] = useState<string | null>(null);
-  const anonFocused = anonymous.find((s) => s.id === anonFocusedId) ?? null;
 
   return (
     <MapContainer
@@ -171,26 +171,15 @@ export function FieldMapInner({
       scrollWheelZoom
     >
       <MapPanes />
-      {anonFocused ? (
-        <TileLayer
-          key="abstract"
-          url={ABSTRACT_TILE_URL}
-          noWrap
-          attribution="Location obfuscated"
-        />
-      ) : (
-        <>
-          <TileLayer
-            key="real"
-            attribution='&copy; OpenStreetMap &copy; CARTO'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
-          />
-          <TileLayer
-            pane="labels"
-            url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-          />
-        </>
-      )}
+      <TileLayer
+        attribution='&copy; OpenStreetMap &copy; CARTO'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
+      />
+      <TileLayer
+        pane="labels"
+        url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+      />
+
 
       <MarkerClusterGroup
         chunkedLoading
