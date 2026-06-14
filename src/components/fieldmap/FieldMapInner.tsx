@@ -7,7 +7,6 @@ import {
   TileLayer,
   useMap,
 } from "react-leaflet";
-
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -15,8 +14,6 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import type { Project, EntityKind } from "@/lib/fieldmap-data";
 import { orgById, orgKind } from "@/lib/fieldmap-data";
-import type { AnonymousSms } from "@/lib/load-anonymous-sms";
-
 
 const PIN_COLORS: Record<EntityKind, string> = {
   RLO: "hsl(152 65% 36%)",
@@ -132,31 +129,14 @@ function offsetFor(seed: string, index: number): [number, number] {
   return [Math.sin(angle) * r, Math.cos(angle) * r];
 }
 
-const anonIcon = L.divIcon({
-  className: "fieldmap-pin fieldmap-pin-anon",
-  html: `
-    <span style="position:relative;display:block;height:30px;width:30px;">
-      <span style="position:absolute;top:8px;left:8px;height:14px;width:14px;border-radius:9999px;background:hsl(35 90% 50%);box-shadow:0 0 0 2px #fff,0 1px 3px rgba(0,0,0,0.3);"></span>
-    </span>
-  `,
-  iconSize: [30, 30],
-  iconAnchor: [15, 15],
-});
-
-
-
 export function FieldMapInner({
   projects,
   onSelect,
   focused,
-  anonymous = [],
-  onAnonSelect,
 }: {
   projects: Project[];
   onSelect: (p: Project, perspectiveOrgId?: string) => void;
   focused: { project: Project; perspectiveOrgId?: string | null } | null;
-  anonymous?: AnonymousSms[];
-  onAnonSelect?: (s: AnonymousSms) => void;
 }) {
   const center = useMemo<[number, number]>(() => [10, 25], []);
 
@@ -179,8 +159,6 @@ export function FieldMapInner({
         pane="labels"
         url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
       />
-
-
       <MarkerClusterGroup
         chunkedLoading
         iconCreateFunction={clusterIcon}
@@ -275,19 +253,7 @@ export function FieldMapInner({
           );
         });
       })}
-      {anonymous.map((s) => (
-        <Marker
-          key={`anon-${s.id}`}
-          position={[s.lat, s.lng]}
-          icon={anonIcon}
-          keyboard={false}
-          eventHandlers={{ click: () => onAnonSelect?.(s) }}
-        />
-      ))}
       <FlyTo focused={focused} />
-
-
-
     </MapContainer>
   );
 }

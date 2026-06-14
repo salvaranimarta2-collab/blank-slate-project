@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import type { Project } from "@/lib/fieldmap-data";
-import type { AnonymousSms } from "@/lib/load-anonymous-sms";
 
 const InnerMap = lazy(() =>
   import("./FieldMapInner").then((m) => ({ default: m.FieldMapInner })),
@@ -10,10 +9,7 @@ export function FieldMap(props: {
   projects: Project[];
   onSelect: (p: Project, perspectiveOrgId?: string) => void;
   focused: { project: Project; perspectiveOrgId?: string | null } | null;
-  anonymous?: AnonymousSms[];
-  onAnonSelect?: (s: AnonymousSms) => void;
 }) {
-
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -31,4 +27,3 @@ export function FieldMap(props: {
     </Suspense>
   );
 }
-
