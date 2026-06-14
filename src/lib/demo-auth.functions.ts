@@ -48,31 +48,32 @@ const SEED_DONOR_ID = "d-ikea";
 // Mock initiatives for the ExampleName demo RLO (own "my initiatives").
 const EXAMPLE_PROJECTS = [
   {
-    title: "Weekend Maths Catch-Up Club",
+    title: "Community Language Classes for Displaced Adults",
     category: "education" as const,
     project_type: "ongoing" as const,
     location_label: "ExampleTown, ExampleCountry",
     description:
-      "Small-group maths tutoring on Saturdays for displaced children who have missed one or more school years. We need workbooks, basic stationery, and a volunteer coordinator to grow from 2 to 4 weekly groups.",
+      "Many displaced adults in the area have no access to language classes, limiting their ability to find work or navigate local services. Existing classes are held far away and require transport they cannot afford.\n\nSolution: Run weekly language classes (local language and English) in our tutoring space, led by volunteer teachers from within the community.",
     beneficiaries: "under 100",
     needs: {
-      funding: { amount: 1200, currency: "EUR" },
-      equipment: "Workbooks, exercise books, pens, and a portable whiteboard",
+      funding: { amount: 600, currency: "EUR", raised: 0 },
+      partnership: true,
       expertise: ["education"],
     } as Record<string, unknown>,
     status: "seeking support",
   },
   {
-    title: "Host-Language Literacy Tutoring",
+    title: "Tablet Lending Library for Children",
     category: "education" as const,
     project_type: "ongoing" as const,
     location_label: "ExampleTown, ExampleCountry",
     description:
-      "After-school reading and writing tutoring in the host country language for newly arrived displaced children aged 7–14. Looking for trained language tutors and printed leveled readers to support 60+ learners.",
-    beneficiaries: "100–500",
+      "Children in our tutoring sessions have no access to devices at home, making it impossible to complete digital homework or access online learning resources outside of sessions.\n\nSolution: Build a small lending library of 15 tablets that children can borrow for a week at a time, with a simple sign-out system managed by community volunteers.",
+    beneficiaries: "under 100",
     needs: {
-      funding: { amount: 900, currency: "EUR" },
-      expertise: ["education", "translation"],
+      funding: { amount: 1500, currency: "EUR", raised: 200 },
+      equipment: "Tablets, protective cases, and a charging station",
+      partnership: true,
     } as Record<string, unknown>,
     status: "seeking support",
   },
