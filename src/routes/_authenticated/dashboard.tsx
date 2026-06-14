@@ -475,7 +475,7 @@ function OrgOverview({
       (acc, p) => acc + (ranges[p.beneficiaries] ?? 0),
       0,
     );
-    if (sum >= 1000) return `${(sum / 1000).toFixed(1)}k`;
+    if (sum >= 1000) return `${(sum / 1000).toFixed(1)}K`;
     return String(sum);
   }, [initiatives]);
 
