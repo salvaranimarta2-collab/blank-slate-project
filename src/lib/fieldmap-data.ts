@@ -478,7 +478,7 @@ export const projects: Project[] = [
     lat: 20.6597,
     lng: -103.3496,
     description:
-      "During the COVID-19 pandemic, FM4 Paso Libre needed to redirect every available peso to food, medical supplies and direct support for migrants in transit. EfR financed and oversaw a 2.5 kWp solar PV system delivered and installed in collaboration with local installer Grupo Beet, removing the shelter's electricity bills and shifting operations to 100% renewable energy.",
+      "FM4 Paso Libre needs to redirect every available peso to food, medical supplies and direct support for migrants in transit. EfR is financing and overseeing a 2.5 kWp solar PV system delivered and installed in collaboration with local installer Grupo Beet, removing the shelter's electricity bills and shifting operations to 100% renewable energy.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 8000, currency: "USD", raised: 8000 },
