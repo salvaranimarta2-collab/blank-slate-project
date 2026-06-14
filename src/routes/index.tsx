@@ -61,12 +61,15 @@ function HomePage() {
   const [orgOpen, setOrgOpen] = useState(false);
   const [partnershipsOpen, setPartnershipsOpen] = useState(false);
   const [, setTick] = useState(0);
+  const [anonymous, setAnonymous] = useState<AnonymousSms[]>([]);
 
   useEffect(() => {
     loadUserProjectsForMap();
+    loadAnonymousSms().then(setAnonymous);
     const unsub = subscribeExtras(() => setTick((t) => t + 1));
     return () => { unsub(); };
   }, []);
+
 
   const visible = useMemo(() => {
     return getAllProjects().filter((p: Project) => {
