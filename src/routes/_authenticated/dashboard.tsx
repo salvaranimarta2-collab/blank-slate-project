@@ -475,7 +475,7 @@ function OrgOverview({
       (acc, p) => acc + (ranges[p.beneficiaries] ?? 0),
       0,
     );
-    if (sum >= 1000) return `${(sum / 1000).toFixed(1)}k`;
+    if (sum >= 1000) return `${(sum / 1000).toFixed(1)}K`;
     return String(sum);
   }, [initiatives]);
 
@@ -502,7 +502,7 @@ function OrgOverview({
         total += Math.round((f.amount * ((h % 70) + 5)) / 100);
       }
     });
-    if (total >= 1000) return `$${(total / 1000).toFixed(0)}k`;
+    if (total >= 1000) return `$${(total / 1000).toFixed(0)}K`;
     return `$${total}`;
   }, [initiatives]);
 
