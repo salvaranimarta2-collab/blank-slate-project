@@ -522,7 +522,7 @@ export const projects: Project[] = [
     lat: 4.9589,
     lng: 8.3269,
     description:
-      "EfR worked with African Development Initiative to design modular solar PV lamps prioritising the women-and-children quarter of the camp, alongside a feasibility assessment for a solar water pump. Lead contamination ruled out pumping the local groundwater. Six months into delivery, COVID-19 reclassified Nigeria as a red-zone country, internal sponsors blocked travel, and the project was halted before installation.",
+      "EfR is working with African Development Initiative to design modular solar PV lamps prioritising the women-and-children quarter of the camp, alongside a feasibility assessment for a solar water pump. Lead contamination rules out pumping the local groundwater, so the team is focusing delivery on the lighting component.",
     beneficiaries: "500–2,000",
     needs: {
       funding: { amount: 15000, currency: "USD", raised: 4500 },
