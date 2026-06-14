@@ -38,8 +38,16 @@ type DbProject = {
   partner_org_refs: string[] | null;
 };
 
+// Pick a random land-ish point on each load (demo only).
+function randomDemoLocation(): { lat: number; lng: number } {
+  // Roughly bias toward populated latitudes; lng is fully random.
+  const lat = Math.random() * 95 - 40; // -40..55
+  const lng = Math.random() * 360 - 180; // -180..180
+  return { lat, lng };
+}
+
 export async function loadUserProjectsForMap() {
-  const [{ data: orgs }, { data: projs }] = await Promise.all([
+  const [{ data: orgs }, { data: projs }, { data: smsRows }] = await Promise.all([
     supabase
       .from("user_orgs")
       .select("id, name, entity_kind, country, region, lat, lng, phone, description"),
@@ -48,6 +56,12 @@ export async function loadUserProjectsForMap() {
       .select(
         "id, org_id, title, category, project_type, target_date, location_label, lat, lng, description, beneficiaries, needs, status, partner_org_refs",
       ),
+    supabase
+      .from("sms_submissions")
+      .select(
+        "id, title, category, project_type, location_label, description, beneficiaries, needs, contact_phone",
+      )
+      .is("claimed_by_user_id", null),
   ]);
 
   const orgList = (orgs as DbOrg[] | null) ?? [];
