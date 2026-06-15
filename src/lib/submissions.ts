@@ -69,7 +69,7 @@ export function deriveSubmission(p: Project): ProjectSubmission | null {
     description_problem: p.description,
     description_org:
       org.description ??
-      `${org.name} is a ${org.orgType} group based in ${org.region}, ${org.country}.`,
+      `${org.name} is a ${org.orgType} group based in ${org.region}, ${org.country} our local community.`,
     contact: org.phone,
     additional_info: additionalInfoFor(p),
     preferred_language: languageByCountry[org.country] ?? "English",
