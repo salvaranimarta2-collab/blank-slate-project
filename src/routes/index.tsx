@@ -31,17 +31,17 @@ import logo from "@/assets/waythrough-logo.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Waythrough — Connecting grassroot RLOs, NGOs and donors" },
+      { title: "Waythrough — Connecting grassroots RLOs, NGOs and donors" },
       {
         name: "description",
         content:
-          "Waythrough connects grassroot RLOs, NGOs and donors. One map, one set of pins, identical treatment for every project.",
+          "Waythrough connects grassroots RLOs, NGOs and donors. One map, one set of pins, identical treatment for every project.",
       },
       { property: "og:title", content: "Waythrough" },
       {
         property: "og:description",
         content:
-          "Waythrough connects grassroot RLOs, NGOs and donors. One map, identical pins, SMS-first contact.",
+          "Waythrough connects grassroots RLOs, NGOs and donors. One map, identical pins, SMS-first contact.",
       },
     ],
   }),
@@ -137,7 +137,7 @@ function HomePage() {
               Waythrough
             </h1>
             <p className="text-[11px] text-muted-foreground">
-              Connecting grassroot RLOs, NGOs and donors
+              Connecting grassroots RLOs, NGOs and donors
             </p>
 
           </div>
